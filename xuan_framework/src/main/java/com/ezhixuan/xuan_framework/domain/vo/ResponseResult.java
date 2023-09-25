@@ -1,11 +1,7 @@
 package com.ezhixuan.xuan_framework.domain.vo;
 
-import com.alibaba.fastjson.JSON;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 通用的结果返回类
@@ -154,14 +150,7 @@ public class ResponseResult<T> implements Serializable {
         //根据不用的业务返回不同的提示信息  比如：当前操作需要登录、参数错误
         /*ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
         System.out.println(JSON.toJSONString(result));*/
-
-        //查询分页信息
-        PageResponseResult responseResult = new PageResponseResult(1,5,50);
-        List list = new ArrayList();
-        list.add("itcast");
-        list.add("itheima");
-        responseResult.setData(list);
-        System.out.println(JSON.toJSONString(responseResult));
+        
 
     }
 

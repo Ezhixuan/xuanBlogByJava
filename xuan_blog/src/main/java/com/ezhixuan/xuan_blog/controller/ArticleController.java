@@ -1,9 +1,7 @@
 package com.ezhixuan.xuan_blog.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
-import com.ezhixuan.xuan_framework.domain.entity.Article;
-import com.ezhixuan.xuan_framework.domain.vo.PageResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
 import com.ezhixuan.xuan_framework.service.ArticleService;
@@ -11,11 +9,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.annotation.Resource;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -43,7 +39,7 @@ public class ArticleController {
   @GetMapping("articleList")
   public ResponseResult articleList(ArticlePageDTO articlePageDTO){
     log.info("articlePageDTO = {}", articlePageDTO);
-    PageResponseResult page = articleService.articlePageQuery(articlePageDTO);
-    return page;
+    PageVo page = articleService.articlePageQuery(articlePageDTO);
+    return ResponseResult.okResult(page);
   }
 }

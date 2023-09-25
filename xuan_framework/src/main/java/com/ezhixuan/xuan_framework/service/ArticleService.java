@@ -3,11 +3,9 @@ package com.ezhixuan.xuan_framework.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
-import com.ezhixuan.xuan_framework.domain.vo.PageResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
-
 import java.util.List;
-
 
 /**
  * 文章表(Article)表服务接口
@@ -29,5 +27,5 @@ public interface ArticleService extends IService<Article> {
      * @param articlePageDTO
      * @return
      */
-    PageResponseResult articlePageQuery(ArticlePageDTO articlePageDTO);
+    PageVo articlePageQuery(ArticlePageDTO articlePageDTO);
 }

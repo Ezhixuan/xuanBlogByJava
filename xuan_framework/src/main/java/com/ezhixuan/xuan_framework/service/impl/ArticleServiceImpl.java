@@ -10,13 +10,16 @@ import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.dao.ArticleDao;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
-import com.ezhixuan.xuan_framework.domain.vo.PageResponseResult;
+import com.ezhixuan.xuan_framework.domain.entity.Category;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.ArticleListVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
 import com.ezhixuan.xuan_framework.service.ArticleService;
+import com.ezhixuan.xuan_framework.service.CategoryService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +30,9 @@ import org.springframework.stereotype.Service;
  */
 @Service("articleService")
 public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> implements ArticleService {
+
+  @Resource private CategoryService categoryService;
+
   /**
    * 热门文章列表
    *
@@ -60,7 +66,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
    * @return
    */
   @Override
-  public PageResponseResult articlePageQuery(ArticlePageDTO articlePageDTO) {
+  public PageVo articlePageQuery(ArticlePageDTO articlePageDTO) {
     // 在首页和分类页面都需要查询文章列表。
     // 首页：查询所有的文章
     // 分类页面：查询对应分类下的文章
@@ -86,6 +92,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     List<Article> records = articlePage.getRecords();
     int slowIndex = 0;
     for (int fastIndex = 0; fastIndex < records.size(); fastIndex++) {
+      // 为每个article查询赋予CategoryName
+      Article oneArticle = records.get(fastIndex);
+      Long categoryId = oneArticle.getCategoryId();
+      Category category = categoryService.getById(categoryId);
+      oneArticle.setCategoryName(category.getName());
+      records.set(fastIndex, oneArticle);
       // 当且仅当fastIndex找到isTop文章时
       if (CommonConstant.ARTICLE_IS_TOP.equals(records.get(fastIndex).getIsTop())) {
         // 交换fastIndex 与 slowIndex 的文章位置
@@ -99,12 +111,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     // 5 封装
     List<ArticleListVo> articleListVos = BeanUtil.copyBeanList(records, ArticleListVo.class);
     // 5.1 返回
-    PageResponseResult pageResponseResult =
-        new PageResponseResult(
-            articlePageDTO.getPageNum(),
-            articlePageDTO.getPageSize(),
-            (int) articlePage.getTotal());
-    pageResponseResult.setData(articleListVos);
-    return pageResponseResult;
+    PageVo pageVo = new PageVo(articleListVos, articlePage.getTotal());
+    return pageVo;
   }
 }

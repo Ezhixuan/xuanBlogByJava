@@ -17,6 +17,5 @@ com\ezhixuan\xuan_framework\service\CategoryService.class
 com\ezhixuan\xuan_framework\domain\vo\ResponseResult.class
 com\ezhixuan\xuan_framework\service\ArticleService.class
 com\ezhixuan\xuan_framework\XuanFrameworkApplication.class
-com\ezhixuan\xuan_framework\domain\vo\PageResponseResult.class
 com\ezhixuan\xuan_framework\config\MybatisPlusConfig.class
 com\ezhixuan\xuan_framework\domain\vo\article\ArticleListVo.class
