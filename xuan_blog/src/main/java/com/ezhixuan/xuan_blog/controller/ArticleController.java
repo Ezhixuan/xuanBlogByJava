@@ -11,6 +11,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,5 +42,11 @@ public class ArticleController {
     log.info("articlePageDTO = {}", articlePageDTO);
     PageVo page = articleService.articlePageQuery(articlePageDTO);
     return ResponseResult.okResult(page);
+  }
+
+  @ApiOperation("文章详情")
+  @GetMapping("/{id}")
+  public ResponseResult queryById(@PathVariable("id") Long id){
+    return articleService.queryById(id);
   }
 }

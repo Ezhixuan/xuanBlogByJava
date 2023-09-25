@@ -12,8 +12,11 @@ import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
+import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.article.ArticleListVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
+import com.ezhixuan.xuan_framework.domain.vo.article.articleDetailVo;
+import com.ezhixuan.xuan_framework.exception.NullParaException;
 import com.ezhixuan.xuan_framework.service.ArticleService;
 import com.ezhixuan.xuan_framework.service.CategoryService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
@@ -62,7 +65,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
   /**
    * 文章分页查询
    *
-   * @param articlePageDTO
+   * @param articlePageDTO 分页dto
    * @return
    */
   @Override
@@ -94,9 +97,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     for (int fastIndex = 0; fastIndex < records.size(); fastIndex++) {
       // 为每个article查询赋予CategoryName
       Article oneArticle = records.get(fastIndex);
-      Long categoryId = oneArticle.getCategoryId();
-      Category category = categoryService.getById(categoryId);
-      oneArticle.setCategoryName(category.getName());
+      oneArticle = queryCategoryNameByCategoryId(oneArticle, Article.class);
       records.set(fastIndex, oneArticle);
       // 当且仅当fastIndex找到isTop文章时
       if (CommonConstant.ARTICLE_IS_TOP.equals(records.get(fastIndex).getIsTop())) {
@@ -113,5 +114,43 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     // 5.1 返回
     PageVo pageVo = new PageVo(articleListVos, articlePage.getTotal());
     return pageVo;
+  }
+
+  /**
+   * 根据id查询文章详情
+   *
+   * @param id 文章id
+   * @return
+   */
+  @Override
+  public ResponseResult queryById(Long id) {
+    // 要求在文章列表点击阅读全文时能够跳转到文章详情页面，可以让用户阅读文章正文。
+    // 要求：①要在文章详情中展示其分类名
+    // 1. 校验参数
+    if (id == null) {
+      throw new NullParaException("参数不能为空");
+    }
+    // 2. 执行查询
+    Article article = getById(id);
+    // 3. 封装
+    articleDetailVo articleDetailVo = queryCategoryNameByCategoryId(article, articleDetailVo.class);
+    // 4. 返回
+    return ResponseResult.okResult(articleDetailVo);
+  }
+
+  /**
+   * 查询CategoryName并赋值给Article
+   *
+   * @param article 源对象
+   * @param clazz 目标对象类型
+   * @return 目标对象
+   * @param <T>
+   */
+  public <T> T queryCategoryNameByCategoryId(Article article, Class<T> clazz) {
+    Long categoryId = article.getCategoryId();
+    Category category = categoryService.getById(categoryId);
+    article.setCategoryName(category.getName());
+    T t = BeanUtil.copyBean(article, clazz);
+    return t;
   }
 }
