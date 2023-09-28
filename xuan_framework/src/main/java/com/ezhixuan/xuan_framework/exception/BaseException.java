@@ -1,16 +1,23 @@
 package com.ezhixuan.xuan_framework.exception;
+
+import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 /**
  * @program: xuanBlog
  * @description: 基础异常
  * @author: Mr.Xuan
  * @create: 2023-09-25 15:39
  */
-public class BaseException extends RuntimeException{
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseException extends RuntimeException {
 
-    public BaseException() {
-    }
-
-    public BaseException(String msg) {
-        super(msg);
-    }
+  private Integer code;
+  private String msg;
+  public BaseException(AppHttpCodeEnum appHttpCodeEnum) {
+    this.code = appHttpCodeEnum.getCode();
+    this.msg = appHttpCodeEnum.getErrorMessage();
+  }
 }

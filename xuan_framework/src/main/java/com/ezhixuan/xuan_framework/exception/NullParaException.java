@@ -7,7 +7,7 @@ package com.ezhixuan.xuan_framework.exception;
  */
 public class NullParaException extends BaseException {
 
-  public NullParaException(String msg) {
-    super(msg);
+  public NullParaException(Integer code,String msg) {
+    super(code,msg);
   }
 }

@@ -11,6 +11,7 @@ import com.ezhixuan.xuan_framework.dao.ArticleDao;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
+import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.article.ArticleListVo;
@@ -128,7 +129,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     // 要求：①要在文章详情中展示其分类名
     // 1. 校验参数
     if (id == null) {
-      throw new NullParaException("参数不能为空");
+      throw new NullParaException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(),"参数不能为空");
     }
     // 2. 执行查询
     Article article = getById(id);

@@ -1,4 +1,4 @@
-package com.ezhixuan.xuan_blog.handler;
+package com.ezhixuan.xuan_framework.handler;
 
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.exception.BaseException;
@@ -16,9 +16,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler
+  @ExceptionHandler(BaseException.class)
   public ResponseResult exceptionHandler(BaseException ex) {
-    log.error("异常信息：{}", ex.getMessage());
-    return ResponseResult.errorResult(411, ex.getMessage());
+    log.error("异常信息：{}", ex);
+    return ResponseResult.errorResult(403 , ex.getMessage());
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseResult exceptionHandler(Exception ex) {
+    log.error("异常信息：{}", ex);
+    return ResponseResult.errorResult(500 , ex.getMessage());
   }
 }
