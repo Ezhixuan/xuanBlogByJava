@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.dao.CommentDao;
+import com.ezhixuan.xuan_framework.dao.UserDao;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Comment;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
@@ -15,9 +16,9 @@ import com.ezhixuan.xuan_framework.domain.vo.comment.CommentVo;
 import com.ezhixuan.xuan_framework.exception.BaseException;
 import com.ezhixuan.xuan_framework.service.CommentService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
 
 /**
  * 评论表(Comment)表服务实现类
@@ -27,6 +28,8 @@ import java.util.List;
  */
 @Service("commentService")
 public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> implements CommentService {
+
+  @Resource private UserDao userDao;
 
   /**
    * 评论列表
@@ -55,7 +58,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         new Page<>(commentPageDTO.getPageNum(), commentPageDTO.getPageSize());
     page(commentPage, commentLambdaQueryWrapper);
     // 4. 查询根评论下的子评论
-    List<CommentVo> commentVos = BeanUtil.copyBeanList(commentPage.getRecords(), CommentVo.class);
+    List<CommentVo> commentVos = queryUserNameAnd2ListCommentVo(commentPage.getRecords());
     commentVos.forEach(
         commentVo -> {
           // 4.1 查询子评论
@@ -64,12 +67,37 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                   Wrappers.<Comment>lambdaQuery()
                       .eq(Comment::getRootId, commentVo.getId())
                       .orderByAsc(Comment::getCreateTime));
-          List<CommentVo> childrenCommentVo =
-              BeanUtil.copyBeanList(childrenComment, CommentVo.class);
+          List<CommentVo> childrenCommentVo = queryUserNameAnd2ListCommentVo(childrenComment);
           commentVo.setChildren(childrenCommentVo);
         });
     // 5. 封装返回
     PageVo pageVo = new PageVo(commentVos, commentPage.getTotal());
     return ResponseResult.okResult(pageVo);
+  }
+
+  /**
+   * 查询评论者的用户名和被评论的用户的用户名并且转换为List<CommentVo>的类型
+   *
+   * @param comments
+   * @return
+   */
+  public List<CommentVo> queryUserNameAnd2ListCommentVo(List<Comment> comments) {
+    // 1. 转换
+    List<CommentVo> commentVos = BeanUtil.copyBeanList(comments, CommentVo.class);
+    // 2. 遍历
+    commentVos.forEach(
+        commentVo -> {
+          // 2.1 查询评论者的用户名
+          String userName = userDao.queryUserName(commentVo.getCreateBy());
+          commentVo.setUsername(userName);
+          // 2.2 查询被评论用户的用户名
+          // 根评论是没有被评论用户的
+          if (!CommonConstant.ARTICLE_ROOT_COMMENT.equals(commentVo.getToCommentUserId())) {
+            String commentedName = userDao.queryUserName(commentVo.getToCommentUserId());
+            commentVo.setToCommentUserName(commentedName);
+          }
+        });
+    // 3. 返回
+    return commentVos;
   }
 }

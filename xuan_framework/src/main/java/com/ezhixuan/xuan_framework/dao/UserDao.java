@@ -11,4 +11,6 @@ import com.ezhixuan.xuan_framework.domain.entity.User;
  */
 public interface UserDao extends BaseMapper<User> {
 
+    String queryUserName(Long id);
+
 }

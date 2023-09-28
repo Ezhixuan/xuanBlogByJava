@@ -38,7 +38,7 @@ public class CommentVo {
   @ApiModelProperty("创建时间")
   private Date createTime;
 
-  @ApiModelProperty("更新人")
+  @ApiModelProperty("用户名")
   private String username;
 
   @ApiModelProperty("子评论")
