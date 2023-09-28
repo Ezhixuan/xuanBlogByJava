@@ -1,161 +1,194 @@
 package com.ezhixuan.xuan_framework.domain.vo;
 
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
+import org.springframework.util.ObjectUtils;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 通用的结果返回类
+ *
+ * @author ezhixuan
  * @param <T>
  */
 public class ResponseResult<T> implements Serializable {
 
-    private String host;
+  private static final long serialVersionUID = 1L;
+  public static final int SUCCESS_CODE = 200;
+  public static final String SUCCESS_MSG = "操作成功";
+  public static final int FAIL_CODE = 500;
+  public static final String FAIL_MSG = "操作失败";
+  public static final ResponseResult<String> SUCCESS =
+      new ResponseResult<>(SUCCESS_CODE, SUCCESS_MSG, null);
+  public static final ResponseResult<String> FAIL = new ResponseResult<>(FAIL_CODE, FAIL_MSG, null);
+  private Integer code;
+  private String message;
+  private T data;
 
-    private Integer code;
+  public ResponseResult() {
+    this.code = SUCCESS_CODE;
+  }
 
-    private String errorMessage;
+  public ResponseResult(Integer code, T data) {
+    this.code = code;
+    this.data = data;
+  }
 
-    private T data;
+  public ResponseResult(Integer code, String msg) {
+    this.code = code;
+    this.message = msg;
+  }
 
-    public ResponseResult() {
-        this.code = 200;
+  public ResponseResult(Integer code, String msg, T data) {
+    this.code = code;
+    this.message = msg;
+    this.data = data;
+  }
+
+  /**
+   * 操作成功，只传入data,默认code=200,msg=操作成功
+   *
+   * @param data
+   * @return
+   * @param <T>
+   */
+  public static <T> ResponseResult<T> okResult(T data) {
+    ResponseResult<T> result = new ResponseResult<>(SUCCESS_CODE, SUCCESS_MSG);
+    if (!ObjectUtils.isEmpty(data)) {
+      result.setData(data);
     }
+    return result;
+  }
 
-    public ResponseResult(Integer code, T data) {
-        this.code = code;
-        this.data = data;
+  /**
+   * 操作成功，传入code和msg,默认data=null
+   *
+   * @param code
+   * @param msg
+   * @return
+   * @param <T>
+   */
+  public static <T> ResponseResult<T> okResult(int code, String msg) {
+    return new ResponseResult<>(code, msg, null);
+  }
+
+  /**
+   * 操作成功，传入AppHttpCodeEnum,默认data=null
+   *
+   * @param enums
+   * @return
+   * @param <T>
+   */
+  public static <T> ResponseResult<T> okResult(AppHttpCodeEnum enums) {
+    return okResult(enums.getCode(), enums.getMessage());
+  }
+
+  /**
+   * 出现错误，输入code以及msg,默认data=null
+   *
+   * @param code
+   * @param msg
+   * @return
+   * @param <T>
+   */
+  public static <T> ResponseResult<T> errorResult(int code, String msg) {
+    return new ResponseResult<>(code, msg, null);
+  }
+
+  /**
+   * 出现错误,传入AppHttpCodeEnum,默认data=null
+   *
+   * @param enums
+   * @return
+   * @param <T>
+   */
+  public static <T> ResponseResult<T> errorResult(AppHttpCodeEnum enums) {
+    return errorResult(enums.getCode(), enums.getMessage());
+  }
+
+  /**
+   * 出现错误，使用enum枚举好的code码，自定义错误信息,默认data=null
+   *
+   * @param enums
+   * @param errorMessage
+   * @return
+   * @param <T>
+   */
+  public static <T> ResponseResult<T> errorResult(AppHttpCodeEnum enums, String errorMessage) {
+    return errorResult(enums.getCode(), errorMessage);
+  }
+
+  public Integer getCode() {
+    return code;
+  }
+
+  public void setCode(Integer code) {
+    this.code = code;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public T getData() {
+    return data;
+  }
+
+  public void setData(T data) {
+    this.data = data;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public ResponseResult(Integer code, String msg, T data) {
-        this.code = code;
-        this.errorMessage = msg;
-        this.data = data;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    ResponseResult<?> that = (ResponseResult<?>) o;
+    return Objects.equals(code, that.code)
+        && Objects.equals(message, that.message)
+        && Objects.equals(data, that.data);
+  }
 
-    public ResponseResult(Integer code, String msg) {
-        this.code = code;
-        this.errorMessage = msg;
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(code, message, data);
+  }
 
-    public static ResponseResult errorResult(int code, String msg) {
-        ResponseResult result = new ResponseResult();
-        return result.error(code, msg);
-    }
+  @Override
+  public String toString() {
+    return "ResponseResult{"
+        + "code="
+        + code
+        + ", message='"
+        + message
+        + '\''
+        + ", data="
+        + data
+        + '}';
+  }
 
-    public static ResponseResult okResult(int code, String msg) {
-        ResponseResult result = new ResponseResult();
-        return result.ok(code, null, msg);
-    }
+  public static void main(String[] args) {
+    /*System.out.println(ResponseResult.SUCCESS);
+    System.out.println(ResponseResult.FAIL);
 
-    public static ResponseResult okResult(Object data) {
-        ResponseResult result = setAppHttpCodeEnum(AppHttpCodeEnum.SUCCESS, AppHttpCodeEnum.SUCCESS.getErrorMessage());
-        if(data!=null) {
-            result.setData(data);
-        }
-        return result;
-    }
+    ResponseResult<Object> responseResult = ResponseResult.okResult(AppHttpCodeEnum.NEED_LOGIN);
+    System.out.println(responseResult);
 
-    public static ResponseResult okResult(){
-        return setAppHttpCodeEnum(AppHttpCodeEnum.SUCCESS, AppHttpCodeEnum.SUCCESS.getErrorMessage());
-    }
+    ResponseResult<Object> responseResult1 = ResponseResult.errorResult(AppHttpCodeEnum.SERVER_ERROR, "啊？卡拉~");
+    System.out.println(responseResult1);
 
-    public static ResponseResult errorResult(AppHttpCodeEnum enums){
-        return setAppHttpCodeEnum(enums,enums.getErrorMessage());
-    }
+    Integer code1 = ResponseResult.SUCCESS.getCode();
+    System.out.println(code1);
 
-    public static ResponseResult errorResult(AppHttpCodeEnum enums, String errorMessage){
-        return setAppHttpCodeEnum(enums,errorMessage);
-    }
-
-    public static ResponseResult setAppHttpCodeEnum(AppHttpCodeEnum enums){
-        return okResult(enums.getCode(),enums.getErrorMessage());
-    }
-
-    private static ResponseResult setAppHttpCodeEnum(AppHttpCodeEnum enums, String errorMessage){
-        return okResult(enums.getCode(),errorMessage);
-    }
-
-    public ResponseResult<?> error(Integer code, String msg) {
-        this.code = code;
-        this.errorMessage = msg;
-        return this;
-    }
-
-    public ResponseResult<?> ok(Integer code, T data) {
-        this.code = code;
-        this.data = data;
-        return this;
-    }
-
-    public ResponseResult<?> ok(Integer code, T data, String msg) {
-        this.code = code;
-        this.data = data;
-        this.errorMessage = msg;
-        return this;
-    }
-
-    public ResponseResult<?> ok(T data) {
-        this.data = data;
-        return this;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-
-    public static void main(String[] args) {
-        //前置
-        /*AppHttpCodeEnum success = AppHttpCodeEnum.SUCCESS;
-        System.out.println(success.getCode());
-        System.out.println(success.getErrorMessage());*/
-
-        //查询一个对象
-        /*Map map = new HashMap();
-        map.put("name","zhangsan");
-        map.put("age",18);
-        ResponseResult result = ResponseResult.okResult(map);
-        System.out.println(JSON.toJSONString(result));*/
-
-
-        //新增，修改，删除  在项目中统一返回成功即可
-       /* ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.SUCCESS);
-        System.out.println(JSON.toJSONString(result));*/
-
-
-        //根据不用的业务返回不同的提示信息  比如：当前操作需要登录、参数错误
-        /*ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
-        System.out.println(JSON.toJSONString(result));*/
-        
-
-    }
-
+    boolean equals = ResponseResult.SUCCESS.equals(responseResult);
+    System.out.println(equals);*/
+  }
 }

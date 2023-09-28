@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.dao.CommentDao;
 import com.ezhixuan.xuan_framework.dao.UserDao;
+import com.ezhixuan.xuan_framework.domain.dto.comment.CommentDTO;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Comment;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
@@ -38,7 +39,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
    * @return
    */
   @Override
-  public ResponseResult commentList(CommentPageDTO commentPageDTO) {
+  public ResponseResult<PageVo> commentList(CommentPageDTO commentPageDTO) {
     // 1. 校验参数
     commentPageDTO.check();
     if (commentPageDTO.getArticleId() == null) {
@@ -100,4 +101,23 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     // 3. 返回
     return commentVos;
   }
+
+    /**
+     * 添加评论
+     *
+     * @param commentDTO
+     * @return
+     */
+    @Override
+    public ResponseResult<String> addComment(CommentDTO commentDTO) {
+        // 1. 评论不能为空
+        if (commentDTO == null || commentDTO.getContent() == null){
+            throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "评论不能为空");
+        }
+        // 2. 保存
+        Comment comment = BeanUtil.copyBean(commentDTO, Comment.class);
+        save(comment);
+        // 3. 返回
+        return ResponseResult.SUCCESS;
+    }
 }

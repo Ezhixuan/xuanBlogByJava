@@ -1,8 +1,10 @@
 package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ezhixuan.xuan_framework.domain.dto.comment.CommentDTO;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Comment;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 
 /**
@@ -18,5 +20,12 @@ public interface CommentService extends IService<Comment> {
      * @param commentPageDTO
      * @return
      */
-    ResponseResult commentList(CommentPageDTO commentPageDTO);
+    ResponseResult<PageVo> commentList(CommentPageDTO commentPageDTO);
+
+    /**
+     * 添加评论
+     * @param commentDTO
+     * @return
+     */
+    ResponseResult<String> addComment(CommentDTO commentDTO);
 }

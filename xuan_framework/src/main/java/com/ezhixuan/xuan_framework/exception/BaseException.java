@@ -18,6 +18,6 @@ public class BaseException extends RuntimeException {
   private String msg;
   public BaseException(AppHttpCodeEnum appHttpCodeEnum) {
     this.code = appHttpCodeEnum.getCode();
-    this.msg = appHttpCodeEnum.getErrorMessage();
+    this.msg = appHttpCodeEnum.getMessage();
   }
 }

@@ -62,6 +62,6 @@ public class BlogLoginServiceImpl implements BlogLoginService {
     String userId = loginUser.getUser().getId().toString();
     // 3. 到redis中删除对应user数据
     redisTemplate.delete(RedisKeyConstant.BLOG_LOGIN_USER + userId);
-    return ResponseResult.okResult();
+    return ResponseResult.SUCCESS;
   }
 }
