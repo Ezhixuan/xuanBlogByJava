@@ -20,4 +20,6 @@ public class CommonConstant {
   public static final String ARTICLE_IS_TOP = "1";
   /** 文章未置顶 */
   public static final String ARTICLE_UN_TOP = "0";
+  /** 文章评论根节点 */
+  public static final Integer ARTICLE_ROOT_COMMENT = -1;
 }
