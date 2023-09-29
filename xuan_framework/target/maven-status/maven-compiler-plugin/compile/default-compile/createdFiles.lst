@@ -13,6 +13,7 @@ com\ezhixuan\xuan_framework\service\impl\LinkServiceImpl.class
 com\ezhixuan\xuan_framework\service\ArticleService.class
 com\ezhixuan\xuan_framework\service\impl\UserServiceImpl.class
 com\ezhixuan\xuan_framework\domain\vo\article\ArticleListVo.class
+com\ezhixuan\xuan_framework\utils\RedisUtil.class
 com\ezhixuan\xuan_framework\dao\CategoryDao.class
 com\ezhixuan\xuan_framework\handler\security\AuthenticationEntryPointImpl.class
 com\ezhixuan\xuan_framework\aspect\logAspect.class

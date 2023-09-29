@@ -12,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @program: xuanBlog
@@ -53,5 +50,12 @@ public class ArticleController {
   @GetMapping("/{id}")
   public ResponseResult<ArticleDetailVo> queryById(@PathVariable("id") Long id){
     return articleService.queryById(id);
+  }
+  
+  @Log(businessName = "浏览量统计")
+  @ApiOperation("浏览量统计")
+  @PutMapping("/updateViewCount/{id}")
+  public ResponseResult updateViewCount(@PathVariable("id") Long id){
+    return articleService.updateViewCount(id);
   }
 }

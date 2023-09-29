@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ezhixuan.xuan_framework.constant.CommonConstant;
+import com.ezhixuan.xuan_framework.constant.RedisKeyConstant;
 import com.ezhixuan.xuan_framework.dao.ArticleDao;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
@@ -17,14 +18,17 @@ import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.article.ArticleDetailVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.ArticleListVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
+import com.ezhixuan.xuan_framework.exception.BaseException;
 import com.ezhixuan.xuan_framework.exception.NullParaException;
 import com.ezhixuan.xuan_framework.service.ArticleService;
 import com.ezhixuan.xuan_framework.service.CategoryService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
+import com.ezhixuan.xuan_framework.utils.RedisUtil;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 文章表(Article)表服务实现类
@@ -36,6 +40,8 @@ import org.springframework.stereotype.Service;
 public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> implements ArticleService {
 
   @Resource private CategoryService categoryService;
+
+  @Resource private RedisUtil redisUtil;
 
   /**
    * 热门文章列表
@@ -129,7 +135,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     // 要求：①要在文章详情中展示其分类名
     // 1. 校验参数
     if (id == null) {
-      throw new NullParaException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(),"参数不能为空");
+      throw new NullParaException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "参数不能为空");
     }
     // 2. 执行查询
     Article article = getById(id);
@@ -153,5 +159,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     article.setCategoryName(category.getName());
     T t = BeanUtil.copyBean(article, clazz);
     return t;
+  }
+
+  /**
+   * 浏览量统计
+   *
+   * @param id
+   * @return
+   */
+  @Override
+  public ResponseResult updateViewCount(Long id) {
+    // 由于网站的浏览量修改相对比较频繁这里采用将浏览量的统计
+    // 与回显统一存储到redis中，并设置定时器每5分钟定时推送一次浏览量数据给数据库
+    // 1. 校验参数
+    if(ObjectUtils.isEmpty(id)){
+      throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST);
+    }
+    // 2. 查询redis缓存中是否包含所需数据,如果包含则添加,如果不包含则查询数据库
+    String key = RedisKeyConstant.ARTICLE_VIEW_COUNT + id;
+    Long count = redisUtil.get(key, Long.class);
+    if (count == null){
+      Article article = getById(id);
+      count = article.getViewCount();
+      redisUtil.set(key,count);
+    }
+    // 3. 访问量加一
+    redisUtil.incr(key);
+    // 4. 返回
+    return ResponseResult.SUCCESS;
   }
 }

@@ -20,8 +20,10 @@ import org.springframework.context.annotation.ComponentScans;
   @ComponentScan("com.ezhixuan.xuan_framework.config"),
   @ComponentScan("com.ezhixuan.xuan_framework.handler"),
   @ComponentScan("com.ezhixuan.xuan_framework.annotation"),
-  @ComponentScan("com.ezhixuan.xuan_framework.aspect")
+  @ComponentScan("com.ezhixuan.xuan_framework.aspect"),
+  @ComponentScan("com.ezhixuan.xuan_framework.utils")
 })
+
 public class XuanBlogApplication {
   public static void main(String[] args) {
     SpringApplication.run(XuanBlogApplication.class, args);

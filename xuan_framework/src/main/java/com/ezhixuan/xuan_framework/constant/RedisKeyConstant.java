@@ -7,4 +7,5 @@ package com.ezhixuan.xuan_framework.constant;
  */
 public class RedisKeyConstant {
     public static final String BLOG_LOGIN_USER = "blog:login:user:";
+  public static final String ARTICLE_VIEW_COUNT = "article:view:";
 }
