@@ -26,9 +26,10 @@ public class MybatisPlusHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("开始插入填充");
         Date date = new Date();
-        this.strictInsertFill(metaObject,"createBy",Long.class, UserUtils.getUser().getId());
+        UserUtils userUtils = new UserUtils();
+        this.strictInsertFill(metaObject,"createBy",Long.class, userUtils.getUser().getId());
         this.strictInsertFill(metaObject,"createTime",Date.class,date);
-        this.strictInsertFill(metaObject,"updateBy",Long.class,UserUtils.getUser().getId());
+        this.strictInsertFill(metaObject,"updateBy",Long.class,userUtils.getUser().getId());
         this.strictInsertFill(metaObject,"updateTime",Date.class,date);
 
     }
@@ -41,7 +42,8 @@ public class MybatisPlusHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("开始更新填充");
-        this.strictUpdateFill(metaObject,"updateBy",Long.class,UserUtils.getUser().getId());
+        UserUtils userUtils = new UserUtils();
+        this.strictUpdateFill(metaObject,"updateBy",Long.class,userUtils.getUser().getId());
         this.strictUpdateFill(metaObject,"updateTime",Date.class,new Date());
     }
 }

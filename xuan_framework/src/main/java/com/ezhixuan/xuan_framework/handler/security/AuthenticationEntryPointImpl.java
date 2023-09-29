@@ -6,6 +6,7 @@ import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.utils.WebUtils;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,10 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
               AppHttpCodeEnum.LOGIN_FAILURE.getCode(), authException.getMessage());
     } else if (authException instanceof InsufficientAuthenticationException) {
       result = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
-    } else {
+    } else if(authException instanceof InternalAuthenticationServiceException){
+      result = ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_USER_ERROR);
+    }
+    else {
       result = ResponseResult.errorResult(AppHttpCodeEnum.SERVER_ERROR.getCode(), "认证或授权失败");
     }
     // 3. 将错误信息返回给前端

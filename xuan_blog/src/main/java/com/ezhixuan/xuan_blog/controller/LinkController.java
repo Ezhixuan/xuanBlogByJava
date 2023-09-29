@@ -1,6 +1,7 @@
 package com.ezhixuan.xuan_blog.controller;
 
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.link.LinkListVo;
 import com.ezhixuan.xuan_framework.service.LinkService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @program: xuanBlog
@@ -25,7 +27,7 @@ public class LinkController {
 
     @GetMapping("/getAllLink")
     @ApiOperation("获取所有友链")
-    public ResponseResult queryAllLink(){
+    public ResponseResult<List<LinkListVo>> queryAllLink(){
         return linkService.queryAllLink();
     }
 }

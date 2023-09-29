@@ -3,6 +3,7 @@ package com.ezhixuan.xuan_blog.controller;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.article.ArticleDetailVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
 import com.ezhixuan.xuan_framework.service.ArticleService;
 import io.swagger.annotations.Api;
@@ -31,14 +32,14 @@ public class ArticleController {
 
   @ApiOperation("热门文章列表")
   @GetMapping("/hotArticleList")
-  public ResponseResult hotArticleList() {
+  public ResponseResult<List<HotArticleVo>> hotArticleList() {
     List<HotArticleVo> hotArticleVos = articleService.hotArticleList();
     return ResponseResult.okResult(hotArticleVos);
   }
 
   @ApiOperation("分页查询文章列表")
   @GetMapping("articleList")
-  public ResponseResult articleList(ArticlePageDTO articlePageDTO){
+  public ResponseResult<PageVo> articleList(ArticlePageDTO articlePageDTO){
     log.info("articlePageDTO = {}", articlePageDTO);
     PageVo page = articleService.articlePageQuery(articlePageDTO);
     return ResponseResult.okResult(page);
@@ -46,7 +47,7 @@ public class ArticleController {
 
   @ApiOperation("文章详情")
   @GetMapping("/{id}")
-  public ResponseResult queryById(@PathVariable("id") Long id){
+  public ResponseResult<ArticleDetailVo> queryById(@PathVariable("id") Long id){
     return articleService.queryById(id);
   }
 }

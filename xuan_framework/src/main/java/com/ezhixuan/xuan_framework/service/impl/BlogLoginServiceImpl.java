@@ -3,12 +3,12 @@ package com.ezhixuan.xuan_framework.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.ezhixuan.xuan_framework.constant.RedisKeyConstant;
-import com.ezhixuan.xuan_framework.domain.dto.login.UserLoginDTO;
+import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.entity.LoginUser;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
-import com.ezhixuan.xuan_framework.domain.vo.login.BlogUserLoginVo;
-import com.ezhixuan.xuan_framework.domain.vo.login.UserInfoVo;
+import com.ezhixuan.xuan_framework.domain.vo.user.BlogUserLoginVo;
+import com.ezhixuan.xuan_framework.domain.vo.user.UserInfoVo;
 import com.ezhixuan.xuan_framework.exception.UserLoginException;
 import com.ezhixuan.xuan_framework.service.BlogLoginService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
  * @author: Mr.Xuan
  * @create: 2023-09-27 19:06
  */
-@Service
+@Service("blogLoginService")
 public class BlogLoginServiceImpl implements BlogLoginService {
 
   @Resource private AuthenticationManager authenticationManager;
@@ -35,7 +35,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
   @Resource private RedisTemplate<String, Object> redisTemplate;
 
   @Override
-  public ResponseResult login(UserLoginDTO userLoginDTO) {
+  public ResponseResult<BlogUserLoginVo> login(UserLoginDTO userLoginDTO) {
     // 1. 用户认证
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword());
     Authentication authenticate = authenticationManager.authenticate(token);
@@ -55,7 +55,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
   }
 
   @Override
-  public ResponseResult logout() {
+  public ResponseResult<String> logout() {
     // 1. 获取userid
     LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     // 2. 获取userid

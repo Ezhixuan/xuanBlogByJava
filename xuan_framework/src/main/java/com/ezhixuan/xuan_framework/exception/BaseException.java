@@ -14,10 +14,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BaseException extends RuntimeException {
 
+  private static final Integer FAIL = 500;
+
   private Integer code;
   private String msg;
   public BaseException(AppHttpCodeEnum appHttpCodeEnum) {
     this.code = appHttpCodeEnum.getCode();
     this.msg = appHttpCodeEnum.getMessage();
+  }
+
+  public BaseException(String msg){
+    this.code = FAIL;
+    this.msg = msg;
   }
 }

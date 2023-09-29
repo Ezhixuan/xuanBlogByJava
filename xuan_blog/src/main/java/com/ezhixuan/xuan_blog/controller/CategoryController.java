@@ -27,7 +27,7 @@ public class CategoryController {
 
     @ApiOperation("分类列表")
     @GetMapping("/getCategoryList")
-    public ResponseResult getCategoryList(){
+    public ResponseResult<List<CategoryListVo>> getCategoryList(){
         List<CategoryListVo> categoryList = categoryService.getCategoryList();
         return ResponseResult.okResult(categoryList);
     }

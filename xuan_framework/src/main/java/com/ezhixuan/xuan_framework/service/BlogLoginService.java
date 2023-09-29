@@ -1,7 +1,8 @@
 package com.ezhixuan.xuan_framework.service;
 
-import com.ezhixuan.xuan_framework.domain.dto.login.UserLoginDTO;
+import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.user.BlogUserLoginVo;
 
 public interface BlogLoginService {
     /**
@@ -9,12 +10,12 @@ public interface BlogLoginService {
      * @param userLoginDTO
      * @return
      */
-    ResponseResult login(UserLoginDTO userLoginDTO);
+    ResponseResult<BlogUserLoginVo> login(UserLoginDTO userLoginDTO);
 
     /**
      * 登出
      * @return
      */
-    ResponseResult logout();
+    ResponseResult<String> logout();
 
 }

@@ -1,7 +1,8 @@
 package com.ezhixuan.xuan_blog.controller;
 
-import com.ezhixuan.xuan_framework.domain.dto.login.UserLoginDTO;
+import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.user.BlogUserLoginVo;
 import com.ezhixuan.xuan_framework.service.BlogLoginService;
 import io.swagger.annotations.Api;
 import javax.annotation.Resource;
@@ -23,12 +24,12 @@ public class BlogLoginController {
     private BlogLoginService blogLoginService;
 
     @PostMapping("/login")
-    public ResponseResult login(@RequestBody UserLoginDTO userLoginDTO){
+    public ResponseResult<BlogUserLoginVo> login(@RequestBody UserLoginDTO userLoginDTO){
         return blogLoginService.login(userLoginDTO);
     }
 
     @PostMapping("/logout")
-    public ResponseResult logout(){
+    public ResponseResult<String> logout(){
         return blogLoginService.logout();
     }
 }

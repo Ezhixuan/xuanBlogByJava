@@ -5,6 +5,7 @@ import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.article.ArticleDetailVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
 import java.util.List;
 
@@ -35,5 +36,5 @@ public interface ArticleService extends IService<Article> {
      * @param id
      * @return
      */
-    ResponseResult queryById(Long id);
+    ResponseResult<ArticleDetailVo> queryById(Long id);
 }

@@ -1,5 +1,6 @@
 package com.ezhixuan.xuan_blog.controller;
 
+import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentDTO;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentPageDTO;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
@@ -33,12 +34,17 @@ public class CommentController {
     @ApiImplicitParam(name = "pageSize", value = "每页条数", required = true)
   })
   public ResponseResult<PageVo> commentList(CommentPageDTO commentPageDTO) {
-    return commentService.commentList(commentPageDTO);
+    return commentService.commentList(CommonConstant.ARTICLE_COMMENT, commentPageDTO);
   }
 
   @PostMapping
   @ApiOperation("添加评论")
   public ResponseResult<String> addComment(@RequestBody CommentDTO commentDTO){
     return commentService.addComment(commentDTO);
+  }
+
+  @GetMapping("/linkCommentList")
+  public ResponseResult linkCommentList(CommentPageDTO commentPageDTO){
+    return commentService.commentList(CommonConstant.LINK_COMMENT, commentPageDTO);
   }
 }

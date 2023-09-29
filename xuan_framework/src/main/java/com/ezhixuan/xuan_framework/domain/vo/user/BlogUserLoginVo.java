@@ -1,4 +1,4 @@
-package com.ezhixuan.xuan_framework.domain.vo.login;
+package com.ezhixuan.xuan_framework.domain.vo.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

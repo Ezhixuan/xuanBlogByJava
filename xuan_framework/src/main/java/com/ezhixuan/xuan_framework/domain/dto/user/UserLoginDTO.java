@@ -1,4 +1,4 @@
-package com.ezhixuan.xuan_framework.domain.dto.login;
+package com.ezhixuan.xuan_framework.domain.dto.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

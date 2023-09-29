@@ -20,7 +20,7 @@ public interface CommentService extends IService<Comment> {
      * @param commentPageDTO
      * @return
      */
-    ResponseResult<PageVo> commentList(CommentPageDTO commentPageDTO);
+    ResponseResult<PageVo> commentList(Integer type, CommentPageDTO commentPageDTO);
 
     /**
      * 添加评论

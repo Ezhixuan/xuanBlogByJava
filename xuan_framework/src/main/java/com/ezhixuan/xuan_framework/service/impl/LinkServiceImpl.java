@@ -28,7 +28,7 @@ public class LinkServiceImpl extends ServiceImpl<LinkDao, Link> implements LinkS
    * @return
    */
   @Override
-  public ResponseResult queryAllLink() {
+  public ResponseResult<List<LinkListVo>> queryAllLink() {
     // 在友链页面显示所有审核通过的友链信息
     // 1. 构建查询
     List<Link> list = list(Wrappers.<Link>lambdaQuery().eq(Link::getStatus, LINK_STATUS_PASSED));

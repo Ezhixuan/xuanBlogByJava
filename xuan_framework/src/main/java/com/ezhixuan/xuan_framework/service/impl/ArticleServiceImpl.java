@@ -14,9 +14,9 @@ import com.ezhixuan.xuan_framework.domain.entity.Category;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.article.ArticleDetailVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.ArticleListVo;
 import com.ezhixuan.xuan_framework.domain.vo.article.HotArticleVo;
-import com.ezhixuan.xuan_framework.domain.vo.article.articleDetailVo;
 import com.ezhixuan.xuan_framework.exception.NullParaException;
 import com.ezhixuan.xuan_framework.service.ArticleService;
 import com.ezhixuan.xuan_framework.service.CategoryService;
@@ -124,7 +124,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
    * @return
    */
   @Override
-  public ResponseResult queryById(Long id) {
+  public ResponseResult<ArticleDetailVo> queryById(Long id) {
     // 要求在文章列表点击阅读全文时能够跳转到文章详情页面，可以让用户阅读文章正文。
     // 要求：①要在文章详情中展示其分类名
     // 1. 校验参数
@@ -134,7 +134,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     // 2. 执行查询
     Article article = getById(id);
     // 3. 封装
-    articleDetailVo articleDetailVo = queryCategoryNameByCategoryId(article, articleDetailVo.class);
+    ArticleDetailVo articleDetailVo = queryCategoryNameByCategoryId(article, ArticleDetailVo.class);
     // 4. 返回
     return ResponseResult.okResult(articleDetailVo);
   }

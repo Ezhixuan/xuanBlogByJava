@@ -12,10 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class UserUtils {
 
-  private static final LoginUser LOGIN_USER =
+  private LoginUser loginUser =
       (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
   
-  public static User getUser(){
-    return LOGIN_USER.getUser();
+  public User getUser(){
+    return loginUser.getUser();
   }
 }

@@ -39,20 +39,25 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
    * @return
    */
   @Override
-  public ResponseResult<PageVo> commentList(CommentPageDTO commentPageDTO) {
+  public ResponseResult<PageVo> commentList(Integer type, CommentPageDTO commentPageDTO) {
     // 1. 校验参数
     commentPageDTO.check();
-    if (commentPageDTO.getArticleId() == null) {
+    if (CommonConstant.ARTICLE_COMMENT.equals(type) && commentPageDTO.getArticleId() == null) {
       throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "文章id不能为空");
     }
     // 2. 构建查询条件
     // 查询改文章的根评论
     LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
     // 2.1 根据文章id查询
-    commentLambdaQueryWrapper.eq(Comment::getArticleId, commentPageDTO.getArticleId());
+    commentLambdaQueryWrapper.eq(
+        CommonConstant.ARTICLE_COMMENT.equals(type),
+        Comment::getArticleId,
+        commentPageDTO.getArticleId());
     // 2.2 查询文章根评论
-    commentLambdaQueryWrapper.eq(Comment::getRootId, CommonConstant.ARTICLE_ROOT_COMMENT);
-    // 2.3 根据发布时间倒序排序
+    commentLambdaQueryWrapper.eq(Comment::getRootId, CommonConstant.ROOT_COMMENT);
+    // 2.3 根据类型查询
+    commentLambdaQueryWrapper.eq(Comment::getType, type);
+    // 2.4 根据发布时间倒序排序
     commentLambdaQueryWrapper.orderByDesc(Comment::getCreateTime);
     // 3. 构建分页查询
     Page<Comment> commentPage =
@@ -93,7 +98,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
           commentVo.setUsername(userName);
           // 2.2 查询被评论用户的用户名
           // 根评论是没有被评论用户的
-          if (!CommonConstant.ARTICLE_ROOT_COMMENT.equals(commentVo.getToCommentUserId())) {
+          if (!CommonConstant.ROOT_COMMENT.equals(commentVo.getToCommentUserId())) {
             String commentedName = userDao.queryUserName(commentVo.getToCommentUserId());
             commentVo.setToCommentUserName(commentedName);
           }
@@ -102,22 +107,22 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     return commentVos;
   }
 
-    /**
-     * 添加评论
-     *
-     * @param commentDTO
-     * @return
-     */
-    @Override
-    public ResponseResult<String> addComment(CommentDTO commentDTO) {
-        // 1. 评论不能为空
-        if (commentDTO == null || commentDTO.getContent() == null){
-            throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "评论不能为空");
-        }
-        // 2. 保存
-        Comment comment = BeanUtil.copyBean(commentDTO, Comment.class);
-        save(comment);
-        // 3. 返回
-        return ResponseResult.SUCCESS;
+  /**
+   * 添加评论
+   *
+   * @param commentDTO
+   * @return
+   */
+  @Override
+  public ResponseResult<String> addComment(CommentDTO commentDTO) {
+    // 1. 评论不能为空
+    if (commentDTO == null || commentDTO.getContent() == null) {
+      throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "评论不能为空");
     }
+    // 2. 保存
+    Comment comment = BeanUtil.copyBean(commentDTO, Comment.class);
+    save(comment);
+    // 3. 返回
+    return ResponseResult.SUCCESS;
+  }
 }

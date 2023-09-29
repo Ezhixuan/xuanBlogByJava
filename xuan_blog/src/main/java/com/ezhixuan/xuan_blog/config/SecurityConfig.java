@@ -79,6 +79,9 @@ public class SecurityConfig {
         // 对于登出接口 需要鉴权访问
         .antMatchers("/logout")
         .authenticated()
+        // 对于用户信息接口 需要鉴权访问
+        .antMatchers("user/userInfo")
+        .authenticated()
         // 除上面外的所有请求全部不需要鉴权认证
         .anyRequest()
         .permitAll();
@@ -87,9 +90,9 @@ public class SecurityConfig {
     // 添加JWT过滤器
     http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     // 添加自定义处理器
-//    http.formLogin()
-//        .successHandler(authenticationSuccessHandler)
-//        .failureHandler(authenticationFailureHandler);
+    //    http.formLogin()
+    //        .successHandler(authenticationSuccessHandler)
+    //        .failureHandler(authenticationFailureHandler);
     http.exceptionHandling()
         .authenticationEntryPoint(authenticationEntryPoint)
         .accessDeniedHandler(accessDeniedHandler);

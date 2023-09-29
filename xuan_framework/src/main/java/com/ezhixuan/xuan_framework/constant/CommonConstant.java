@@ -21,5 +21,9 @@ public class CommonConstant {
   /** 文章未置顶 */
   public static final String ARTICLE_UN_TOP = "0";
   /** 文章评论根节点 */
-  public static final Long ARTICLE_ROOT_COMMENT = -1L;
+  public static final Long ROOT_COMMENT = -1L;
+  /** 评论类型（0代表文章评论，1代表友链评论） */
+  public static final Integer ARTICLE_COMMENT = 0;
+  /** 评论类型（0代表文章评论，1代表友链评论） */
+  public static final Integer LINK_COMMENT = 1;
 }
