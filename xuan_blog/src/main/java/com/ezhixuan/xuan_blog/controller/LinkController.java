@@ -1,5 +1,6 @@
 package com.ezhixuan.xuan_blog.controller;
 
+import com.ezhixuan.xuan_framework.annotation.Log;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.link.LinkListVo;
 import com.ezhixuan.xuan_framework.service.LinkService;
@@ -27,6 +28,7 @@ public class LinkController {
 
     @GetMapping("/getAllLink")
     @ApiOperation("获取所有友链")
+    @Log(businessName = "获取所有友链")
     public ResponseResult<List<LinkListVo>> queryAllLink(){
         return linkService.queryAllLink();
     }

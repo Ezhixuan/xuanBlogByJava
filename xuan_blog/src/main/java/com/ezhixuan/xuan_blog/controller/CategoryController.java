@@ -1,5 +1,6 @@
 package com.ezhixuan.xuan_blog.controller;
 
+import com.ezhixuan.xuan_framework.annotation.Log;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.category.CategoryListVo;
 import com.ezhixuan.xuan_framework.service.CategoryService;
@@ -25,6 +26,7 @@ public class CategoryController {
     @Resource
     private CategoryService categoryService;
 
+    @Log(businessName = "分类列表")
     @ApiOperation("分类列表")
     @GetMapping("/getCategoryList")
     public ResponseResult<List<CategoryListVo>> getCategoryList(){

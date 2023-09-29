@@ -15,6 +15,7 @@ com\ezhixuan\xuan_framework\service\impl\UserServiceImpl.class
 com\ezhixuan\xuan_framework\domain\vo\article\ArticleListVo.class
 com\ezhixuan\xuan_framework\dao\CategoryDao.class
 com\ezhixuan\xuan_framework\handler\security\AuthenticationEntryPointImpl.class
+com\ezhixuan\xuan_framework\aspect\logAspect.class
 com\ezhixuan\xuan_framework\constant\CommonConstant.class
 com\ezhixuan\xuan_framework\handler\MybatisPlusHandler.class
 com\ezhixuan\xuan_framework\config\WebConfig.class
@@ -48,12 +49,14 @@ com\ezhixuan\xuan_framework\domain\entity\LoginUser.class
 com\ezhixuan\xuan_framework\utils\UserUtils.class
 com\ezhixuan\xuan_framework\domain\dto\article\ArticlePageDTO.class
 com\ezhixuan\xuan_framework\utils\BeanUtil.class
+com\ezhixuan\xuan_framework\annotation\Log.class
 com\ezhixuan\xuan_framework\service\BlogLoginService.class
 com\ezhixuan\xuan_framework\constant\RedisKeyConstant.class
 com\ezhixuan\xuan_framework\service\CommentService.class
 com\ezhixuan\xuan_framework\domain\entity\Link.class
 com\ezhixuan\xuan_framework\domain\entity\Category.class
 com\ezhixuan\xuan_framework\service\LinkService.class
+com\ezhixuan\xuan_framework\domain\dto\user\UserRegisterDTO.class
 com\ezhixuan\xuan_framework\service\UploadService.class
 com\ezhixuan\xuan_framework\domain\dto\PageDTO.class
 com\ezhixuan\xuan_framework\domain\entity\Comment.class

@@ -1,6 +1,7 @@
 package com.ezhixuan.xuan_framework.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserInfoDTO;
+import com.ezhixuan.xuan_framework.domain.dto.user.UserRegisterDTO;
 import com.ezhixuan.xuan_framework.domain.entity.User;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.user.UserInfoVo;
@@ -25,5 +26,12 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResponseResult<String> updateUserInfo(UserInfoDTO userInfoDTO);
+
+    /**
+     * 用户注册
+     * @param userRegisterDTO
+     * @return
+     */
+    ResponseResult<String> register(UserRegisterDTO userRegisterDTO);
 }
 

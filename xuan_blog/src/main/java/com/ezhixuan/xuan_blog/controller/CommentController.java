@@ -1,5 +1,6 @@
 package com.ezhixuan.xuan_blog.controller;
 
+import com.ezhixuan.xuan_framework.annotation.Log;
 import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentDTO;
 import com.ezhixuan.xuan_framework.domain.dto.comment.CommentPageDTO;
@@ -26,8 +27,9 @@ public class CommentController {
 
   @Autowired private CommentService commentService;
 
+  @Log(businessName = "文章评论列表")
   @GetMapping("/commentList")
-  @ApiOperation("评论列表")
+  @ApiOperation("文章评论列表")
   @ApiImplicitParams({
     @ApiImplicitParam(name = "articleId", value = "文章id", required = true),
     @ApiImplicitParam(name = "pageNum", value = "页码", required = true),
@@ -37,12 +39,15 @@ public class CommentController {
     return commentService.commentList(CommonConstant.ARTICLE_COMMENT, commentPageDTO);
   }
 
+  @Log(businessName = "添加评论")
   @PostMapping
   @ApiOperation("添加评论")
   public ResponseResult<String> addComment(@RequestBody CommentDTO commentDTO){
     return commentService.addComment(commentDTO);
   }
 
+  @Log(businessName = "友链评论列表")
+  @ApiOperation("友链评论列表")
   @GetMapping("/linkCommentList")
   public ResponseResult linkCommentList(CommentPageDTO commentPageDTO){
     return commentService.commentList(CommonConstant.LINK_COMMENT, commentPageDTO);

@@ -11,11 +11,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @create: 2023-09-28 18:33
  */
 public class UserUtils {
-
-  private LoginUser loginUser =
-      (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
   
   public User getUser(){
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal == "anonymousUser"){
+      return new User();
+    }
+    LoginUser loginUser = (LoginUser) principal;
     return loginUser.getUser();
   }
 }

@@ -37,7 +37,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
   @Override
   public ResponseResult<BlogUserLoginVo> login(UserLoginDTO userLoginDTO) {
     // 1. 用户认证
-    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword());
     Authentication authenticate = authenticationManager.authenticate(token);
     if (ObjectUtil.isNull(authenticate)){
       throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(),"用户名或密码错误");

@@ -18,7 +18,9 @@ import org.springframework.context.annotation.ComponentScans;
   @ComponentScan("com.ezhixuan.xuan_framework.service"),
   @ComponentScan("com.ezhixuan.xuan_framework.dao"),
   @ComponentScan("com.ezhixuan.xuan_framework.config"),
-  @ComponentScan("com.ezhixuan.xuan_framework.handler")
+  @ComponentScan("com.ezhixuan.xuan_framework.handler"),
+  @ComponentScan("com.ezhixuan.xuan_framework.annotation"),
+  @ComponentScan("com.ezhixuan.xuan_framework.aspect")
 })
 public class XuanBlogApplication {
   public static void main(String[] args) {
