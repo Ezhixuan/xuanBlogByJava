@@ -139,9 +139,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     }
     // 2. 执行查询
     Article article = getById(id);
-    // 3. 封装
+    // 3. viewCount实际上在redis中
+    Long viewCount = redisUtil.getHash(RedisKeyConstant.ARTICLE_VIEW_COUNT_KEY, id.toString(), Long.class);
+    article.setViewCount(viewCount);
+    // 4. 封装
     ArticleDetailVo articleDetailVo = queryCategoryNameByCategoryId(article, ArticleDetailVo.class);
-    // 4. 返回
+    // 5. 返回
     return ResponseResult.okResult(articleDetailVo);
   }
 
@@ -176,15 +179,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
       throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST);
     }
     // 2. 查询redis缓存中是否包含所需数据,如果包含则添加,如果不包含则查询数据库
-    String key = RedisKeyConstant.ARTICLE_VIEW_COUNT + id;
-    Long count = redisUtil.get(key, Long.class);
+    String key = RedisKeyConstant.ARTICLE_VIEW_COUNT_KEY;
+    Long count = redisUtil.getHash(key, id.toString(),Long.class);
     if (count == null){
       Article article = getById(id);
       count = article.getViewCount();
-      redisUtil.set(key,count);
+      redisUtil.setHash(key,id.toString(),count);
     }
     // 3. 访问量加一
-    redisUtil.incr(key);
+    redisUtil.incrHash(key, id.toString());
     // 4. 返回
     return ResponseResult.SUCCESS;
   }

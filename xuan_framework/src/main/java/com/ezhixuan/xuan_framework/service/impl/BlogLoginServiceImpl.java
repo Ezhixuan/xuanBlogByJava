@@ -47,7 +47,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
     String userId = loginUser.getUser().getId().toString();
     String jwt = JwtUtil.createJWT(userId);
     // 3. 将用户信息存入redis中
-    redisTemplate.opsForValue().set(RedisKeyConstant.BLOG_LOGIN_USER + userId, JSONUtil.toJsonStr(loginUser));
+    redisTemplate.opsForValue().set(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId, JSONUtil.toJsonStr(loginUser));
     // 4. 返回jwt和userInfo
     UserInfoVo userInfoVo = BeanUtil.copyBean(loginUser.getUser(), UserInfoVo.class);
     BlogUserLoginVo blogUserLoginVo = new BlogUserLoginVo(jwt, userInfoVo);
@@ -61,7 +61,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
     // 2. 获取userid
     String userId = loginUser.getUser().getId().toString();
     // 3. 到redis中删除对应user数据
-    redisTemplate.delete(RedisKeyConstant.BLOG_LOGIN_USER + userId);
+    redisTemplate.delete(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId);
     return ResponseResult.SUCCESS;
   }
 }

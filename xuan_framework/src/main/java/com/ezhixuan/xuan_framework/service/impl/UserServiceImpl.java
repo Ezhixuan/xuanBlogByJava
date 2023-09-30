@@ -75,7 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     loginUser.setUser(user);
     redisTemplate
         .opsForValue()
-        .set(RedisKeyConstant.BLOG_LOGIN_USER + user.getId(), JSONUtil.toJsonStr(loginUser));
+        .set(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + user.getId(), JSONUtil.toJsonStr(loginUser));
     // 5. 返回
     return ResponseResult.SUCCESS;
   }

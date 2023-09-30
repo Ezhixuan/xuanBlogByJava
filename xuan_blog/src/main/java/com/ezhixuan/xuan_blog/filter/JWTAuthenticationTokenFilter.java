@@ -61,7 +61,7 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
     }
     // 3. 从redis中获取用户信息
     String userId = claims.getSubject();
-    Object JsonStr = redisTemplate.opsForValue().get(RedisKeyConstant.BLOG_LOGIN_USER + userId);
+    Object JsonStr = redisTemplate.opsForValue().get(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId);
     LoginUser loginUser = JSONUtil.toBean((String) JsonStr, LoginUser.class);
     
     if (ObjectUtil.isNull(loginUser)) {

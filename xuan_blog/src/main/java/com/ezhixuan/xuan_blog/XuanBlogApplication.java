@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @program: xuanBlog
@@ -23,7 +24,7 @@ import org.springframework.context.annotation.ComponentScans;
   @ComponentScan("com.ezhixuan.xuan_framework.aspect"),
   @ComponentScan("com.ezhixuan.xuan_framework.utils")
 })
-
+@EnableScheduling
 public class XuanBlogApplication {
   public static void main(String[] args) {
     SpringApplication.run(XuanBlogApplication.class, args);
