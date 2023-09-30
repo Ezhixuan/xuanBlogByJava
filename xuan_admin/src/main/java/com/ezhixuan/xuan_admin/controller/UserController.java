@@ -2,6 +2,7 @@ package com.ezhixuan.xuan_admin.controller;
 
 import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.menu.RoutersVo;
 import com.ezhixuan.xuan_framework.domain.vo.user.SysUserInfo;
 import com.ezhixuan.xuan_framework.service.LoginService;
 import io.swagger.annotations.Api;
@@ -33,5 +34,11 @@ public class UserController {
     @GetMapping("getInfo")
     public ResponseResult<SysUserInfo> getInfo(){
         return loginService.getInfo();
+    }
+
+    @ApiOperation("路由")
+    @GetMapping("getRouters")
+    public ResponseResult<RoutersVo> getRouters(){
+        return loginService.getRouters();
     }
 }

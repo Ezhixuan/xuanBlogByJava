@@ -2,6 +2,7 @@ package com.ezhixuan.xuan_framework.service;
 
 import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.menu.RoutersVo;
 import com.ezhixuan.xuan_framework.domain.vo.user.SysUserInfo;
 
 import java.util.Map;
@@ -27,4 +28,10 @@ public interface LoginService {
      */
     ResponseResult<SysUserInfo> getInfo();
 
+    /**
+     * 获取路由信息
+     *
+     * @return
+     */
+    ResponseResult<RoutersVo> getRouters();
 }

@@ -21,9 +21,27 @@
           AND m.`status` = 0
           AND m.`menu_type` IN ("C","F")
     </select>
-    <select id="queryAllMenu" resultType="java.lang.String">
+    <select id="queryAllChildrenMenu" resultType="java.lang.String">
         SELECT perms
         FROM `sys_menu`
         WHERE menu_type IN ("C", "F")
+    </select>
+    <select id="queryRootMenuByUserId" resultType="com.ezhixuan.xuan_framework.domain.entity.Menu">
+        SELECT m.*
+        FROM sys_user_role ur
+                 LEFT JOIN sys_role_menu rm ON ur.role_id = rm.role_id
+                 LEFT JOIN sys_menu m ON rm.menu_id = m.id
+        WHERE ur.user_id = #{userId}
+          AND menu_type = "M"
+    </select>
+    <select id="queryChildrenMenuById" resultType="com.ezhixuan.xuan_framework.domain.entity.Menu">
+        SELECT *
+        FROM sys_menu
+        WHERE parent_id = #{menuId}
+    </select>
+    <select id="queryAllRootMenu" resultType="com.ezhixuan.xuan_framework.domain.entity.Menu">
+        SELECT *
+        FROM `sys_menu`
+        WHERE menu_type = "M"
     </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -62,5 +63,7 @@ public class Menu  {
     private String remark;
     @TableLogic
     private String delFlag;
+    @TableField(exist = false)
+    private List<Menu> children;
     
 }

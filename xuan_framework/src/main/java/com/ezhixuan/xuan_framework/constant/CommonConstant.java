@@ -28,4 +28,5 @@ public class CommonConstant {
   public static final Integer LINK_COMMENT = 1;
   /** 超级管理员 */
   public static final String ADMIN = "admin";
+
 }

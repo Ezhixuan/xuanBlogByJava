@@ -1,6 +1,5 @@
 package com.ezhixuan.xuan_framework.utils;
 
-import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import javax.annotation.Resource;
@@ -23,7 +22,7 @@ public class RedisUtil {
    * @param key redis键
    * @param value redis值
    */
-  public <T> boolean setValue(@NotNull String key, T value) {
+  public <T> boolean setValue( String key, T value) {
     boolean result = false;
     try {
       ((ValueOperations<Serializable, T>) redisTemplate.opsForValue()).set(key, value);
@@ -41,7 +40,7 @@ public class RedisUtil {
    * @return boolean
    * @param <T> 泛型
    */
-  public <T> boolean setValue(@NotNull Map<String, T> map) {
+  public <T> boolean setValue( Map<String, T> map) {
     boolean result = false;
     try {
       ((ValueOperations<Serializable, T>) redisTemplate.opsForValue()).multiSet(map);
@@ -59,7 +58,7 @@ public class RedisUtil {
    * @param clazz 目标对象类型
    * @return T
    */
-  public <T> T getValue(@NotNull String key, Class<T> clazz) {
+  public <T> T getValue( String key, Class<T> clazz) {
     Object o = redisTemplate.opsForValue().get(key);
     return cast(o, clazz);
   }
@@ -72,7 +71,7 @@ public class RedisUtil {
    * @return List<T>
    * @param <T> 泛型
    */
-  public <T> List<T> getValueList(@NotNull String key, Class<T> clazz) {
+  public <T> List<T> getValueList( String key, Class<T> clazz) {
     Object o = redisTemplate.opsForValue().get(key);
     if (ObjectUtils.isEmpty(o)) {
       return null;
@@ -87,7 +86,7 @@ public class RedisUtil {
    * @return Map
    * @param <T> 泛型
    */
-  public <T> Map<String, T> getValueMap(@NotNull String pattern) {
+  public <T> Map<String, T> getValueMap( String pattern) {
     List<String> scan = scan(pattern);
     ValueOperations<String, T> valueOperations = redisTemplate.opsForValue();
     List<T> list = valueOperations.multiGet(scan);
@@ -104,7 +103,7 @@ public class RedisUtil {
    * @param key redis键
    * @return Long
    */
-  public Long incrValue(@NotNull String key) {
+  public Long incrValue( String key) {
     return redisTemplate.opsForValue().increment(key);
   }
 
@@ -115,7 +114,7 @@ public class RedisUtil {
    * @param number 自增数
    * @return Long
    */
-  public Long incrValue(@NotNull String key, Long number) {
+  public Long incrValue( String key, Long number) {
     return redisTemplate.opsForValue().increment(key, number);
   }
 
@@ -126,7 +125,7 @@ public class RedisUtil {
    * @param number 自增数
    * @return Double
    */
-  public Double incrValue(@NotNull String key, Double number) {
+  public Double incrValue( String key, Double number) {
     return redisTemplate.opsForValue().increment(key, number);
   }
 
@@ -146,7 +145,7 @@ public class RedisUtil {
    * @param dataList 待缓存的List数据
    * @return 缓存的对象
    */
-  public <T> long setListR(@NotNull String key, List<T> dataList) {
+  public <T> long setListR( String key, List<T> dataList) {
     Long count = redisTemplate.opsForList().rightPushAll(key, dataList);
     return count == null ? 0 : count;
   }
@@ -157,7 +156,7 @@ public class RedisUtil {
    * @param dataList 待缓存的List数据
    * @return 缓存的对象
    */
-  public <T> long setListL(@NotNull String key, List<T> dataList) {
+  public <T> long setListL( String key, List<T> dataList) {
     Long count = redisTemplate.opsForList().leftPushAll(key, dataList);
     return count == null ? 0 : count;
   }
@@ -168,7 +167,7 @@ public class RedisUtil {
    * @param key 缓存的键值
    * @return 缓存键值对应的数据
    */
-  public <T> List<T> getList(@NotNull String key) {
+  public <T> List<T> getList( String key) {
     List range = redisTemplate.opsForList().range(key, 0, -1);
     return castList(range, (Class<T>) range.get(0).getClass());
   }
@@ -180,7 +179,7 @@ public class RedisUtil {
    * @param dataSet 缓存的数据
    * @return 缓存数据的对象
    */
-  public <T> BoundSetOperations<String, T> setSet(@NotNull String key, Set<T> dataSet) {
+  public <T> BoundSetOperations<String, T> setSet( String key, Set<T> dataSet) {
     BoundSetOperations<String, T> setOperation = redisTemplate.boundSetOps(key);
     Iterator<T> it = dataSet.iterator();
     while (it.hasNext()) {
@@ -195,7 +194,7 @@ public class RedisUtil {
    * @param key 缓存键值
    * @return Set<T>
    */
-  public <T> Set<T> getSet(@NotNull String key, Class<T> clazz) {
+  public <T> Set<T> getSet( String key, Class<T> clazz) {
     Set members = redisTemplate.opsForSet().members(key);
     members.forEach(
         member -> {
@@ -221,7 +220,7 @@ public class RedisUtil {
    * @param key 缓存键值
    * @param dataMap 缓存的数据
    */
-  public <T> void setHash(@NotNull String key, Map<String, T> dataMap) {
+  public <T> void setHash( String key, Map<String, T> dataMap) {
     if (dataMap != null) {
       redisTemplate.opsForHash().putAll(key, dataMap);
     }
@@ -234,7 +233,7 @@ public class RedisUtil {
    * @param hKey Hash键
    * @return Hash中的对象
    */
-  public <T> T getHash(@NotNull String key, String hKey, Class<T> clazz) {
+  public <T> T getHash( String key, String hKey, Class<T> clazz) {
     HashOperations opsForHash = redisTemplate.opsForHash();
     Object o = opsForHash.get(key, hKey);
     return cast(o, clazz);
@@ -246,7 +245,7 @@ public class RedisUtil {
    * @param key Redis键
    * @return Map对象
    */
-  public <T> Map<String, T> getHashMap(@NotNull String key, Class<T> clazz) {
+  public <T> Map<String, T> getHashMap( String key, Class<T> clazz) {
     Map<String, Object> entries = redisTemplate.opsForHash().entries(key);
     // 对entries遍历，将其转换为T类型
     HashMap<String, T> stringTHashMap = new HashMap<>();
@@ -263,7 +262,7 @@ public class RedisUtil {
    * @param key Redis键
    * @param hkey Hash键
    */
-  public void delCacheMapValue(@NotNull String key, String hkey) {
+  public void delCacheMapValue( String key, String hkey) {
     HashOperations hashOperations = redisTemplate.opsForHash();
     hashOperations.delete(key, hkey);
   }
@@ -317,7 +316,7 @@ public class RedisUtil {
    * @param hKeys Hash键集合
    * @return Hash对象集合
    */
-  public <T> List<T> getMultiCacheMapValue(@NotNull String key, Collection<Object> hKeys) {
+  public <T> List<T> getMultiCacheMapValue( String key, Collection<Object> hKeys) {
     List list = redisTemplate.opsForHash().multiGet(key, hKeys);
     list.forEach(
         o -> {
@@ -353,7 +352,7 @@ public class RedisUtil {
    * @param pattern 模糊查询的key
    * @return Long
    */
-  public Long cleanCaches(@NotNull String pattern) {
+  public Long cleanCaches( String pattern) {
     List<String> keys = scan(pattern);
     return redisTemplate.delete(keys);
   }
@@ -364,7 +363,7 @@ public class RedisUtil {
    * @param pattern 模糊查询的key
    * @return List<String>
    */
-  public List<String> scan(@NotNull String pattern) {
+  public List<String> scan( String pattern) {
     List<String> result = new ArrayList<>();
     Cursor<byte[]> cursor = null;
     try {

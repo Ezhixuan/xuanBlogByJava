@@ -4,14 +4,20 @@ import cn.hutool.core.util.ObjectUtil;
 import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.constant.RedisKeyConstant;
 import com.ezhixuan.xuan_framework.dao.MenuDao;
+import com.ezhixuan.xuan_framework.dao.RoleDao;
 import com.ezhixuan.xuan_framework.dao.UserDao;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.entity.LoginUser;
+import com.ezhixuan.xuan_framework.domain.entity.Menu;
+import com.ezhixuan.xuan_framework.domain.entity.User;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.menu.RoutersVo;
 import com.ezhixuan.xuan_framework.domain.vo.user.SysUserInfo;
+import com.ezhixuan.xuan_framework.domain.vo.user.UserInfoVo;
 import com.ezhixuan.xuan_framework.exception.UserLoginException;
 import com.ezhixuan.xuan_framework.service.LoginService;
+import com.ezhixuan.xuan_framework.utils.BeanUtil;
 import com.ezhixuan.xuan_framework.utils.JwtUtil;
 import com.ezhixuan.xuan_framework.utils.RedisUtil;
 import com.ezhixuan.xuan_framework.utils.UserUtils;
@@ -38,7 +44,8 @@ public class LoginServiceImpl implements LoginService {
 
   @Resource private UserDao userDao;
   @Resource private MenuDao menuDao;
-  
+  @Resource private RoleDao roleDao;
+
   @Resource private RedisUtil redisUtil;
 
   @Override
@@ -88,19 +95,49 @@ public class LoginServiceImpl implements LoginService {
       throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(), "用户未登录");
     }
     // 2. 查询当前用户的角色信息
-    List<String> userRole = userDao.queryUserRole(loginUser.getUser().getId());
+    List<String> userRole = roleDao.queryUserRole(loginUser.getUser().getId());
     // 3. 权限，如果用户角色信息包含超级管理员，返回所有权限
     List<String> permissions = loginUser.getPermissions();
-    if (userRole.contains(CommonConstant.ADMIN)){
-      permissions = menuDao.queryAllMenu();
+    if (userRole.contains(CommonConstant.ADMIN)) {
+      permissions = menuDao.queryAllChildrenMenu();
     }
-    // 3. 封装返回
+    // 3. 获取用户信息
+    User user = loginUser.getUser();
+    UserInfoVo userInfoVo = BeanUtil.copyBean(user, UserInfoVo.class);
+    // 4. 封装返回
     SysUserInfo userInfo =
-        SysUserInfo.builder()
-            .permissions(permissions)
-            .roles(userRole)
-            .user(loginUser.getUser())
-            .build();
+        SysUserInfo.builder().permissions(permissions).roles(userRole).user(userInfoVo).build();
     return ResponseResult.okResult(userInfo);
+  }
+
+  /**
+   * 获取路由信息
+   *
+   * @return
+   */
+  @Override
+  public ResponseResult<RoutersVo> getRouters() {
+    // 1. 获取当前用户
+    LoginUser loginUser = new UserUtils().getLoginUser();
+    Long userId = loginUser.getUser().getId();
+    // 2. 查询当前用户的角色信息
+    List<String> userRole = roleDao.queryUserRole(userId);
+    List<Menu> menus = null;
+    if (userRole.contains(CommonConstant.ADMIN)) {
+       menus = menuDao.queryAllRootMenu();
+    }else {
+       menus = menuDao.queryRootMenuByUserId(loginUser.getUser().getId());
+    }
+    // 3. 查询根菜单的子菜单
+    menus.stream()
+        .forEach(
+            menu -> {
+              List<Menu> children = menuDao.queryChildrenMenuById(menu.getId());
+              menu.setChildren(children);
+            });
+    // 4. 封装返回
+    RoutersVo routersVo = new RoutersVo();
+    routersVo.setMenus(menus);
+    return ResponseResult.okResult(routersVo);
   }
 }
