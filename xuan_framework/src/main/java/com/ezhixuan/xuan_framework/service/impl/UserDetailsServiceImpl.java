@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UserLoginException(AppHttpCodeEnum.LOGIN_USER_ERROR.getCode(),"用户不存在");
         }
         // 2. 查询用户权限信息
-        List<String> perms = menuDao.selectPermsByUserId(user.getId());
+        List<String> perms = menuDao.queryPermsByUserId(user.getId());
         // 3. 返回UserDetails
         return new LoginUser(user,perms);
     }

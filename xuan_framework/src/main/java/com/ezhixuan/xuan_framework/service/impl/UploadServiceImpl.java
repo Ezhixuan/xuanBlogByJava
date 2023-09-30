@@ -16,17 +16,4 @@ import org.springframework.web.multipart.MultipartFile;
 @Service("uploadService")
 public class UploadServiceImpl implements UploadService{
 
-    @Resource private TencentCosUtil tencentCosUtil;
-    
-    /**
-     * 图片上传
-     *
-     * @param img
-     * @return
-     */
-    @Override
-    public ResponseResult<String> upload(MultipartFile img) {
-        String upload = tencentCosUtil.upload(img);
-        return ResponseResult.okResult(upload);
-    }
 }

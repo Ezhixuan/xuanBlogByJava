@@ -1,10 +1,9 @@
 package com.ezhixuan.xuan_framework.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,8 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @create: 2023-09-27 18:13
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginUser implements UserDetails {
     
     private User user;
@@ -34,8 +33,7 @@ public class LoginUser implements UserDetails {
     }
 
     //存储SpringSecurity所需要的权限信息的集合
-    @JsonIgnore
-    private List<GrantedAuthority> authorities;
+    private List<SimpleGrantedAuthority> authorities;
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

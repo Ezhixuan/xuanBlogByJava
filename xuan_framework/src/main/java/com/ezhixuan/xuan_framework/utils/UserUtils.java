@@ -14,22 +14,43 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 @Slf4j
 public class UserUtils {
+  /**
+   * 获取当前登录用户
+   *
+   * @return
+   */
   public User getUser() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null) {
+    LoginUser loginUser = getLoginUser();
+    if (loginUser == null){
       return createUser();
     }
-    Object principal = authentication.getPrincipal();
-    if (principal == "anonymousUser") {
-      return createUser();
-    }
-    LoginUser loginUser = (LoginUser) principal;
     return loginUser.getUser();
   }
 
+  /**
+   * 用户不存在时使用，创建一个新用户 id默认为-1
+   * @return
+   */
   private User createUser() {
     User user = new User();
     user.setId(-1L);
     return user;
+  }
+
+  /**
+   * 获取LoginUser
+   * @return
+   */
+  public LoginUser getLoginUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null) {
+      return null;
+    }
+    Object principal = authentication.getPrincipal();
+    if (principal == "anonymousUser") {
+      return null;
+    }
+    LoginUser loginUser = (LoginUser) principal;
+    return loginUser;
   }
 }

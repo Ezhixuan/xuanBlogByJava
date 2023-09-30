@@ -1,7 +1,6 @@
 package com.ezhixuan.xuan_framework.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONUtil;
 import com.ezhixuan.xuan_framework.constant.RedisKeyConstant;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.entity.LoginUser;
@@ -13,8 +12,8 @@ import com.ezhixuan.xuan_framework.exception.UserLoginException;
 import com.ezhixuan.xuan_framework.service.BlogLoginService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
 import com.ezhixuan.xuan_framework.utils.JwtUtil;
+import com.ezhixuan.xuan_framework.utils.RedisUtil;
 import javax.annotation.Resource;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +31,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
 
   @Resource private AuthenticationManager authenticationManager;
   
-  @Resource private RedisTemplate<String, Object> redisTemplate;
+  @Resource private RedisUtil redisUtil;
 
   @Override
   public ResponseResult<BlogUserLoginVo> login(UserLoginDTO userLoginDTO) {
@@ -47,7 +46,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
     String userId = loginUser.getUser().getId().toString();
     String jwt = JwtUtil.createJWT(userId);
     // 3. 将用户信息存入redis中
-    redisTemplate.opsForValue().set(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId, JSONUtil.toJsonStr(loginUser));
+    redisUtil.setValue(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId, loginUser);
     // 4. 返回jwt和userInfo
     UserInfoVo userInfoVo = BeanUtil.copyBean(loginUser.getUser(), UserInfoVo.class);
     BlogUserLoginVo blogUserLoginVo = new BlogUserLoginVo(jwt, userInfoVo);
@@ -61,7 +60,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
     // 2. 获取userid
     String userId = loginUser.getUser().getId().toString();
     // 3. 到redis中删除对应user数据
-    redisTemplate.delete(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId);
+    redisUtil.cleanCache(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId);
     return ResponseResult.SUCCESS;
   }
 }

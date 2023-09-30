@@ -1,4 +1,4 @@
-package com.ezhixuan.xuan_blog.filter;
+package com.ezhixuan.xuan_admin.filter;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -62,7 +62,7 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
     // 3. 从redis中获取用户信息
     String userId = claims.getSubject();
     LoginUser loginUser = redisUtil.getValue(RedisKeyConstant.ADMIN_LOGIN_USER_BY_ID + userId, LoginUser.class);
-    
+
     if (ObjectUtil.isNull(loginUser)) {
       ResponseResult responseResult = ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_USER_ERROR);
       String jsonStr = JSONUtil.toJsonStr(responseResult);

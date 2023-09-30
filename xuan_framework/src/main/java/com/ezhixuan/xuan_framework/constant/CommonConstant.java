@@ -26,4 +26,6 @@ public class CommonConstant {
   public static final Integer ARTICLE_COMMENT = 0;
   /** 评论类型（0代表文章评论，1代表友链评论） */
   public static final Integer LINK_COMMENT = 1;
+  /** 超级管理员 */
+  public static final String ADMIN = "admin";
 }

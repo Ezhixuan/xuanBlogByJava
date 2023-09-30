@@ -4,7 +4,6 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -15,15 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @MapperScan("com.ezhixuan.xuan_framework.dao")
-@ComponentScans({
-  @ComponentScan("com.ezhixuan.xuan_framework.service"),
-  @ComponentScan("com.ezhixuan.xuan_framework.dao"),
-  @ComponentScan("com.ezhixuan.xuan_framework.config"),
-  @ComponentScan("com.ezhixuan.xuan_framework.handler"),
-  @ComponentScan("com.ezhixuan.xuan_framework.annotation"),
-  @ComponentScan("com.ezhixuan.xuan_framework.aspect"),
-  @ComponentScan("com.ezhixuan.xuan_framework.utils")
-})
+@ComponentScan("com.ezhixuan")
 @EnableScheduling
 public class XuanBlogApplication {
   public static void main(String[] args) {

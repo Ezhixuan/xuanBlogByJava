@@ -13,6 +13,7 @@ import java.util.List;
  */
 public interface MenuDao extends BaseMapper<Menu> {
 
-    List<String> selectPermsByUserId(Long id);
+    List<String> queryPermsByUserId(Long id);
 
+    List<String> queryAllMenu();
 }
