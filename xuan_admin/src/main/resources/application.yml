@@ -1,6 +1,9 @@
 server:
   port: 8989
+
 spring:
+  profiles:
+    active: dev
   datasource:
     url: jdbc:mysql://localhost:3306/xuan_blog?characterEncoding=utf-8&serverTimezone=UTC
     username: root
@@ -23,3 +26,9 @@ mybatis-plus:
       id-type: auto
 knife4j:
   enable: true
+blog:
+  txcos:
+    tmpSecretId: ${blog.txcos.tmpSecretId} # 你的secretId
+    tmpSecretKey: ${blog.txcos.tmpSecretKey} # 你的secretKey
+    bucketName: ${blog.txcos.bucketName} # 你的bucketName
+    region: ${blog.txcos.region} # 你仓库的地址

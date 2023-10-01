@@ -41,4 +41,10 @@ public class UserController {
     public ResponseResult<RoutersVo> getRouters(){
         return loginService.getRouters();
     }
+    
+    @ApiOperation("退出登录")
+    @PostMapping("/user/logout")
+    public ResponseResult<String> logout() {
+        return loginService.logout();
+    }
 }

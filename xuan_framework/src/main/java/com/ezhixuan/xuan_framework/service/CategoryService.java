@@ -2,8 +2,10 @@ package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
-import com.ezhixuan.xuan_framework.domain.vo.category.CategoryListVo;
+import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
+import com.ezhixuan.xuan_framework.domain.vo.category.CategoryVo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -20,6 +22,17 @@ public interface CategoryService extends IService<Category> {
      *
      * @return
      */
-    List<CategoryListVo> getCategoryList();
+    List<CategoryVo> getCategoryList();
 
+    /**
+     * 展示所有发布的分类
+     * @return
+     */
+    ResponseResult<List<CategoryVo>> listAllCategory();
+
+    /**
+     * 导出excel
+     * @param response
+     */
+    void export(HttpServletResponse response);
 }

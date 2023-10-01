@@ -18,62 +18,85 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(
+    value = {
+      "authorities",
+      "password",
+      "accountNonExpired",
+      "accountNonLocked",
+      "credentialsNonExpired",
+      "enabled",
+      "username"
+    })
 public class LoginUser implements UserDetails {
-    
-    private User user;
+  /** 用户信息 */
+  private User user;
 
-    //存储权限信息
-    private List<String> permissions;
+  /** 权限信息 */
+  private List<String> permissions;
 
+  /** 角色信息 */
+  private List<String> roles;
 
-    public LoginUser(User user, List<String> permissions) {
-        this.user = user;
-        this.permissions = permissions;
+  /** 存储SpringSecurity所需权限集合 */
+  private List<SimpleGrantedAuthority> authorities;
+
+  public LoginUser(User user) {
+    this.user = user;
+    this.permissions = null;
+    this.roles = null;
+  }
+
+  public LoginUser(User user, List<String> permissions) {
+    this.user = user;
+    this.permissions = permissions;
+    this.roles = null;
+  }
+
+  public LoginUser(User user, List<String> permissions, List<String> roles) {
+    this.user = user;
+    this.permissions = permissions;
+    this.roles = roles;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    if (authorities != null) {
+      return authorities;
     }
+    // 把permissions中字符串类型的权限信息转换成GrantedAuthority对象存入authorities中
+    authorities =
+        permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    return authorities;
+  }
 
-    //存储SpringSecurity所需要的权限信息的集合
-    private List<SimpleGrantedAuthority> authorities;
-    
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(authorities!=null){
-            return authorities;
-        }
-        //把permissions中字符串类型的权限信息转换成GrantedAuthority对象存入authorities中
-        authorities = permissions.stream().
-                map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-        return authorities;
-    }
+  @Override
+  public String getPassword() {
+    return user.getPassword();
+  }
 
-    @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
+  @Override
+  public String getUsername() {
+    return user.getUserName();
+  }
 
-    @Override
-    public String getUsername() {
-        return user.getUserName();
-    }
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

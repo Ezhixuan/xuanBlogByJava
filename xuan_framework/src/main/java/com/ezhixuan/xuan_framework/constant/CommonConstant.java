@@ -28,5 +28,11 @@ public class CommonConstant {
   public static final Integer LINK_COMMENT = 1;
   /** 超级管理员 */
   public static final String ADMIN = "admin";
+  /** 用户类型 (0代表普通用户, 1表示管理员) */
+  public static final String USER_TYPE_COMMON = "0";
+  /** 用户类型 (0代表普通用户, 1表示管理员) */
+  public static final String USER_TYPE_ADMIN = "1";
 
+  /** 根节点 */
+  public static final Long ROOT = 0L;
 }

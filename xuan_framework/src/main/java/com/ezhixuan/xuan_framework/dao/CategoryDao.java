@@ -2,7 +2,7 @@ package com.ezhixuan.xuan_framework.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
-import com.ezhixuan.xuan_framework.domain.vo.category.CategoryListVo;
+import com.ezhixuan.xuan_framework.domain.vo.category.CategoryVo;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ public interface CategoryDao extends BaseMapper<Category> {
      * 查询有正式发布的文章的列表
      * @return
      */
-    List<CategoryListVo> getCategoryList();
+    List<CategoryVo> getCategoryList();
 }

@@ -1,6 +1,7 @@
 package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ezhixuan.xuan_framework.domain.dto.article.ArticleDTO;
 import com.ezhixuan.xuan_framework.domain.dto.article.ArticlePageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Article;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
@@ -43,6 +44,41 @@ public interface ArticleService extends IService<Article> {
      * @param id
      * @return
      */
-    ResponseResult updateViewCount(Long id);
+    ResponseResult<String> updateViewCount(Long id);
 
+    /**
+     * 新增文章
+     * @param articleDTO
+     * @return
+     */
+    ResponseResult<String> add(ArticleDTO articleDTO);
+
+    /**
+     * 后台查询文章列表
+     *
+     * @param articlePageDTO
+     * @return
+     */
+    ResponseResult<PageVo> sysList(ArticlePageDTO articlePageDTO);
+
+    /**
+     * 后台查询文章
+     * @param id
+     * @return
+     */
+    ResponseResult<Article> querySysById(Long id);
+
+    /**
+     * 后台修改文章
+     * @param articleDTO
+     * @return
+     */
+    ResponseResult<String> update(ArticleDTO articleDTO);
+
+    /**
+     * 后台删除文章
+     * @param ids
+     * @return
+     */
+    ResponseResult<String> delete(List<Long> ids);
 }

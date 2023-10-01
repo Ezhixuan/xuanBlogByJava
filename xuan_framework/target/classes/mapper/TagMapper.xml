@@ -12,7 +12,10 @@
         <result property="delFlag" column="del_flag"/>
         <result property="remark" column="remark"/>
     </resultMap>
- 
+    <delete id="deleteRelationship">
+
+    </delete>
+
 
 </mapper>
 

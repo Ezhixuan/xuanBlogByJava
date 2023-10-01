@@ -14,7 +14,7 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
     </resultMap>
-    <select id="getCategoryList" resultType="com.ezhixuan.xuan_framework.domain.vo.category.CategoryListVo">
+    <select id="getCategoryList" resultType="com.ezhixuan.xuan_framework.domain.vo.category.CategoryVo">
         SELECT DISTINCT c.id, c.name
         FROM xuan_category c
                  LEFT JOIN xuan_article a ON c.id = a.category_id

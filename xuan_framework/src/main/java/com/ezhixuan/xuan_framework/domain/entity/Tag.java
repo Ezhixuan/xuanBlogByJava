@@ -1,9 +1,6 @@
 package com.ezhixuan.xuan_framework.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -38,21 +35,21 @@ public class Tag implements Serializable {
   private String name;
   // createBy
   @ApiModelProperty("createBy")
-  @TableField(value = "create_by")
+  @TableField(value = "create_by", fill = FieldFill.INSERT)
   private Long createBy;
   // createTime
   @ApiModelProperty("createTime")
-  @TableField(value = "create_time")
+  @TableField(value = "create_time", fill = FieldFill.INSERT)
   @JsonFormat(pattern = "yyyy-MM-dd")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date createTime;
   // updateBy
   @ApiModelProperty("updateBy")
-  @TableField(value = "update_by")
+  @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
   private Long updateBy;
   // updateTime
   @ApiModelProperty("updateTime")
-  @TableField(value = "update_time")
+  @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
   @JsonFormat(pattern = "yyyy-MM-dd")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date updateTime;

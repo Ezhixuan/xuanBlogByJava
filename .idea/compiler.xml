@@ -16,4 +16,9 @@
       <module name="xuan-framework" target="1.8" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="xuan_framework" options="" />
+    </option>
+  </component>
 </project>

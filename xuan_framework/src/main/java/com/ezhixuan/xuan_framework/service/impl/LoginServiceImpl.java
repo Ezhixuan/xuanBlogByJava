@@ -4,8 +4,6 @@ import cn.hutool.core.util.ObjectUtil;
 import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.constant.RedisKeyConstant;
 import com.ezhixuan.xuan_framework.dao.MenuDao;
-import com.ezhixuan.xuan_framework.dao.RoleDao;
-import com.ezhixuan.xuan_framework.dao.UserDao;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserLoginDTO;
 import com.ezhixuan.xuan_framework.domain.entity.LoginUser;
 import com.ezhixuan.xuan_framework.domain.entity.Menu;
@@ -24,6 +22,7 @@ import com.ezhixuan.xuan_framework.utils.UserUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,11 +40,7 @@ import org.springframework.stereotype.Service;
 public class LoginServiceImpl implements LoginService {
 
   @Resource private AuthenticationManager authenticationManager;
-
-  @Resource private UserDao userDao;
   @Resource private MenuDao menuDao;
-  @Resource private RoleDao roleDao;
-
   @Resource private RedisUtil redisUtil;
 
   @Override
@@ -90,12 +85,12 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public ResponseResult<SysUserInfo> getInfo() {
     // 1. 获取当前用户
-    LoginUser loginUser = new UserUtils().getLoginUser();
+    LoginUser loginUser = UserUtils.getLoginUser();
     if (loginUser == null) {
       throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(), "用户未登录");
     }
     // 2. 查询当前用户的角色信息
-    List<String> userRole = roleDao.queryUserRole(loginUser.getUser().getId());
+    List<String> userRole = loginUser.getRoles();
     // 3. 权限，如果用户角色信息包含超级管理员，返回所有权限
     List<String> permissions = loginUser.getPermissions();
     if (userRole.contains(CommonConstant.ADMIN)) {
@@ -118,26 +113,47 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public ResponseResult<RoutersVo> getRouters() {
     // 1. 获取当前用户
-    LoginUser loginUser = new UserUtils().getLoginUser();
+    LoginUser loginUser = UserUtils.getLoginUser();
     Long userId = loginUser.getUser().getId();
     // 2. 查询当前用户的角色信息
-    List<String> userRole = roleDao.queryUserRole(userId);
+    List<String> userRole = loginUser.getRoles();
     List<Menu> menus = null;
     if (userRole.contains(CommonConstant.ADMIN)) {
-       menus = menuDao.queryAllRootMenu();
-    }else {
-       menus = menuDao.queryRootMenuByUserId(loginUser.getUser().getId());
+      menus = menuDao.queryAllRootMenu();
+    } else {
+      menus = menuDao.queryRootMenuByUserId(loginUser.getUser().getId());
     }
-    // 3. 查询根菜单的子菜单
-    menus.stream()
-        .forEach(
-            menu -> {
-              List<Menu> children = menuDao.queryChildrenMenuById(menu.getId());
-              menu.setChildren(children);
-            });
+    // 3. 构建根目录
+    menus = buildTree(menus);
     // 4. 封装返回
     RoutersVo routersVo = new RoutersVo();
     routersVo.setMenus(menus);
     return ResponseResult.okResult(routersVo);
+  }
+
+  /**
+   * 构建根目录
+   * @param menus
+   * @return
+   */
+  private List<Menu> buildTree(List<Menu> menus) {
+
+    return menus.stream()
+        .filter(menu -> menu.getParentId().equals(CommonConstant.ROOT))
+        .peek(menu -> menu.setChildren(setChildrenMenu(menus, menu)))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * 添加children
+   * @param menus
+   * @param rootMenu
+   * @return
+   */
+  private List<Menu> setChildrenMenu(List<Menu> menus, Menu rootMenu) {
+    return menus.stream()
+        .filter(menu -> menu.getParentId().equals(rootMenu.getId()))
+        .peek(menu -> menu.setChildren(setChildrenMenu(menus, menu)))
+        .collect(Collectors.toList());
   }
 }

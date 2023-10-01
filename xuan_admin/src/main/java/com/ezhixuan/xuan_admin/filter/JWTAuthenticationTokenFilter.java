@@ -67,6 +67,7 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
       ResponseResult responseResult = ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_USER_ERROR);
       String jsonStr = JSONUtil.toJsonStr(responseResult);
       WebUtils.renderString(response,jsonStr);
+      return;
     }
     // 4. 将用户信息存入SecurityContext
     UsernamePasswordAuthenticationToken authenticationToken =

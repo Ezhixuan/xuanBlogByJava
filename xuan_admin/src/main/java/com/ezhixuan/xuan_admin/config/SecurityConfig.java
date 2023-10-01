@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @create: 2023-09-27 19:08
  */
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
   @Resource private JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
@@ -72,8 +74,14 @@ public class SecurityConfig {
         // 对于登录接口 允许匿名访问
         .antMatchers("/user/login")
         .anonymous()
-        .antMatchers("/doc.html/**")
-        .anonymous()
+        .antMatchers(
+            "/doc.html",
+            "/webjars/**",
+            "/img.icons/**",
+            "/swagger-resources/**",
+            "/**",
+            "/v2/api-docs")
+        .permitAll()
         //        // 对于登出接口 需要鉴权访问
         //        .antMatchers("/logout")
         //        .authenticated()

@@ -55,7 +55,7 @@ public class ArticleController {
   @Log(businessName = "浏览量统计")
   @ApiOperation("浏览量统计")
   @PutMapping("/updateViewCount/{id}")
-  public ResponseResult updateViewCount(@PathVariable("id") Long id){
+  public ResponseResult<String> updateViewCount(@PathVariable("id") Long id){
     return articleService.updateViewCount(id);
   }
 }

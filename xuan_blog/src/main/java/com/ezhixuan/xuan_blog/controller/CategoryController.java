@@ -2,7 +2,7 @@ package com.ezhixuan.xuan_blog.controller;
 
 import com.ezhixuan.xuan_framework.annotation.Log;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
-import com.ezhixuan.xuan_framework.domain.vo.category.CategoryListVo;
+import com.ezhixuan.xuan_framework.domain.vo.category.CategoryVo;
 import com.ezhixuan.xuan_framework.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,8 +29,8 @@ public class CategoryController {
     @Log(businessName = "分类列表")
     @ApiOperation("分类列表")
     @GetMapping("/getCategoryList")
-    public ResponseResult<List<CategoryListVo>> getCategoryList(){
-        List<CategoryListVo> categoryList = categoryService.getCategoryList();
+    public ResponseResult<List<CategoryVo>> getCategoryList(){
+        List<CategoryVo> categoryList = categoryService.getCategoryList();
         return ResponseResult.okResult(categoryList);
     }
 }

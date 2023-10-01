@@ -10,5 +10,10 @@ import com.ezhixuan.xuan_framework.domain.entity.Tag;
  */
 public interface TagDao extends BaseMapper<Tag> {
 
+    /**
+     * 删除标签与文章的关联关系
+     * @param id
+     */
+    void deleteRelationship(Long id);
 }
 
