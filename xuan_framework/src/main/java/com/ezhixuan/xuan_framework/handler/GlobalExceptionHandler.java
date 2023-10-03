@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(BaseException.class)
   public ResponseResult exceptionHandler(BaseException ex) {
     log.error("异常信息：{}", ex);
-    return ResponseResult.errorResult(403 , ex.getMessage());
+    return ResponseResult.errorResult(403 , ex.getMsg());
   }
 
   @ExceptionHandler(AuthenticationException.class)

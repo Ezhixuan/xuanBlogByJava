@@ -1,7 +1,9 @@
 package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ezhixuan.xuan_framework.domain.dto.link.LinkPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Link;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.link.LinkListVo;
 
@@ -20,4 +22,18 @@ public interface LinkService extends IService<Link> {
      * @return
      */
     ResponseResult<List<LinkListVo>> queryAllLink();
+
+    /**
+     * 友链列表
+     * @param linkDTO
+     * @return
+     */
+    ResponseResult<PageVo> queryList(LinkPageDTO linkDTO);
+
+    /**
+     * 删除友链
+     * @param ids
+     * @return
+     */
+    ResponseResult<String> remove(List<Long> ids);
 }

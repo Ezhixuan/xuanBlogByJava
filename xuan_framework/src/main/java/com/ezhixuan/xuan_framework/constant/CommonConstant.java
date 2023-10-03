@@ -1,4 +1,5 @@
 package com.ezhixuan.xuan_framework.constant;
+
 /**
  * @program: xuanBlog
  * @description: 状态
@@ -11,11 +12,11 @@ public class CommonConstant {
   /** 文章草稿 */
   public static final Integer ARTICLE_STATUS_DRAFT = 1;
   /** 友链审核通过 */
-  public static final Integer LINK_STATUS_PASSED = 0;
+  public static final String LINK_STATUS_PASSED = "0";
   /** 友链审核未通过 */
-  public static final Integer LINK_STATUS_UNPASS = 1;
+  public static final String LINK_STATUS_UNPASS = "1";
   /** 友链未审核 */
-  public static final Integer LINK_STATUS_UNCHECKED = 2;
+  public static final String LINK_STATUS_UNCHECKED = "2";
   /** 文章置顶 */
   public static final String ARTICLE_IS_TOP = "1";
   /** 文章未置顶 */
@@ -35,4 +36,19 @@ public class CommonConstant {
 
   /** 根节点 */
   public static final Long ROOT = 0L;
+  /** 菜单类型（M目录 C菜单 F按钮） */
+  public static final String MENU_TYPE_BUTTON = "F";
+  /** 菜单类型（M目录 C菜单 F按钮） */
+  public static final String MENU_TYPE_CATEGORY = "C";
+  /** 菜单类型（M目录 C菜单 F按钮） */
+  public static final String MENU_TYPE_MENU = "M";
+
+  /**
+   * 角色状态（0正常 1停用）
+   */
+  public static final String STATUS_NORMAL = "0";
+  /**
+   * 角色状态（0正常 1停用）
+   */
+  public static final String STATUS_DISABLE = "1";
 }

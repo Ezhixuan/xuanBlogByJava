@@ -32,7 +32,7 @@ public class ArticleTag implements Serializable {
 
   // 文章id
   @ApiModelProperty("文章id")
-  @TableId(value = "article_id", type = IdType.AUTO)
+  @TableId(value = "article_id",type = IdType.INPUT)
   private Long articleId;
   // 标签id
   @ApiModelProperty("标签id")

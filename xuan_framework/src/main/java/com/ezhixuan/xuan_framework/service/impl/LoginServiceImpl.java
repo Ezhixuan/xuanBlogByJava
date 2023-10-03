@@ -15,6 +15,7 @@ import com.ezhixuan.xuan_framework.domain.vo.user.SysUserInfo;
 import com.ezhixuan.xuan_framework.domain.vo.user.UserInfoVo;
 import com.ezhixuan.xuan_framework.exception.UserLoginException;
 import com.ezhixuan.xuan_framework.service.LoginService;
+import com.ezhixuan.xuan_framework.service.MenuService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
 import com.ezhixuan.xuan_framework.utils.JwtUtil;
 import com.ezhixuan.xuan_framework.utils.RedisUtil;
@@ -22,7 +23,6 @@ import com.ezhixuan.xuan_framework.utils.UserUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +42,8 @@ public class LoginServiceImpl implements LoginService {
   @Resource private AuthenticationManager authenticationManager;
   @Resource private MenuDao menuDao;
   @Resource private RedisUtil redisUtil;
+  
+  @Resource private MenuService menuService;
 
   @Override
   public ResponseResult<Map<String, String>> login(UserLoginDTO userLoginDTO) {
@@ -124,36 +126,12 @@ public class LoginServiceImpl implements LoginService {
       menus = menuDao.queryRootMenuByUserId(loginUser.getUser().getId());
     }
     // 3. 构建根目录
-    menus = buildTree(menus);
+    menus = menuService.buildTree(menus);
     // 4. 封装返回
     RoutersVo routersVo = new RoutersVo();
     routersVo.setMenus(menus);
     return ResponseResult.okResult(routersVo);
   }
 
-  /**
-   * 构建根目录
-   * @param menus
-   * @return
-   */
-  private List<Menu> buildTree(List<Menu> menus) {
-
-    return menus.stream()
-        .filter(menu -> menu.getParentId().equals(CommonConstant.ROOT))
-        .peek(menu -> menu.setChildren(setChildrenMenu(menus, menu)))
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * 添加children
-   * @param menus
-   * @param rootMenu
-   * @return
-   */
-  private List<Menu> setChildrenMenu(List<Menu> menus, Menu rootMenu) {
-    return menus.stream()
-        .filter(menu -> menu.getParentId().equals(rootMenu.getId()))
-        .peek(menu -> menu.setChildren(setChildrenMenu(menus, menu)))
-        .collect(Collectors.toList());
-  }
+  
 }

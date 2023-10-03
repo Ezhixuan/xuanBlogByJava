@@ -1,12 +1,13 @@
 package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ezhixuan.xuan_framework.domain.dto.category.CategoryPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.category.CategoryVo;
-
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 分类表(Category)表服务接口
@@ -35,4 +36,19 @@ public interface CategoryService extends IService<Category> {
      * @param response
      */
     void export(HttpServletResponse response);
+
+    /**
+     * 分类列表
+     *
+     * @param categoryDTO
+     * @return
+     */
+    ResponseResult<PageVo> queryList(CategoryPageDTO categoryDTO);
+
+    /**
+     * 删除分类
+     * @param ids
+     * @return
+     */
+    ResponseResult<String> delete(List<Long> ids);
 }

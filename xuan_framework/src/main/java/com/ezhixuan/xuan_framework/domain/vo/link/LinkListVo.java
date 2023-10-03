@@ -31,4 +31,7 @@ public class LinkListVo {
 
   @ApiModelProperty("网址")
   private String address;
+
+  @ApiModelProperty("状态")
+  private String status;
 }

@@ -2,13 +2,22 @@ package com.ezhixuan.xuan_framework.service.impl;
 
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ezhixuan.xuan_framework.constant.CommonConstant;
 import com.ezhixuan.xuan_framework.dao.CategoryDao;
+import com.ezhixuan.xuan_framework.domain.dto.category.CategoryPageDTO;
+import com.ezhixuan.xuan_framework.domain.entity.Article;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
 import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
+import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.category.CategoryVo;
 import com.ezhixuan.xuan_framework.domain.vo.category.ExcelCategoryVo;
+import com.ezhixuan.xuan_framework.exception.BaseException;
+import com.ezhixuan.xuan_framework.service.ArticleService;
 import com.ezhixuan.xuan_framework.service.CategoryService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
 import com.ezhixuan.xuan_framework.utils.WebUtils;
@@ -17,6 +26,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * 分类表(Category)表服务实现类
@@ -30,6 +41,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category>
     implements CategoryService {
 
   @Resource private CategoryDao categoryDao;
+
+  @Resource private ArticleService articleService;
 
   /**
    * 分类列表 只展示有正式发布文章的分类
@@ -84,5 +97,63 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category>
       String jsonStr = JSONUtil.toJsonStr(result);
       WebUtils.renderString(response, jsonStr);
     }
+  }
+
+  /**
+   * 分类列表
+   *
+   * @param categoryDTO
+   * @return
+   */
+  @Override
+  public ResponseResult<PageVo> queryList(CategoryPageDTO categoryDTO) {
+    // 1. 校验参数
+    categoryDTO.check();
+    // 2. 构建查询
+    LambdaQueryWrapper<Category> categoryLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    // 2.1 如果分类名存在,按照分类名模糊查询
+    categoryLambdaQueryWrapper.like(
+        StringUtils.hasText(categoryDTO.getName()), Category::getName, categoryDTO.getName());
+    // 2.2 如果状态存在，按照状态查询，否则查询正常状态
+    if (StringUtils.hasText(categoryDTO.getStatus())) {
+      categoryLambdaQueryWrapper.eq(Category::getStatus, categoryDTO.getStatus());
+    } else {
+      categoryLambdaQueryWrapper.eq(Category::getStatus, CommonConstant.STATUS_NORMAL);
+    }
+    // 2.3 根据id排序
+    categoryLambdaQueryWrapper.orderByAsc(Category::getId);
+    // 3. 分页查询
+    Page<Category> categoryPage = new Page<>(categoryDTO.getPageNum(), categoryDTO.getPageSize());
+    page(categoryPage, categoryLambdaQueryWrapper);
+    // 4. 封装返回
+    PageVo pageVo = new PageVo(categoryPage.getRecords(), categoryPage.getTotal());
+    return ResponseResult.okResult(pageVo);
+  }
+
+  /**
+   * 删除分类
+   *
+   * @param ids
+   * @return
+   */
+  @Override
+  public ResponseResult<String> delete(List<Long> ids) {
+    // 1. 校验参数
+    if (ObjectUtils.isEmpty(ids)) {
+      throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST);
+    }
+    // 2. 查询该分类下是否有文章
+    ids.forEach(
+        id -> {
+          int count =
+              articleService.count(Wrappers.<Article>lambdaQuery().eq(Article::getCategoryId, id));
+          if (count > 0) {
+            throw new BaseException("该分类下有文章，不能删除");
+          }
+        });
+    // 3. 删除分类
+    removeByIds(ids);
+    // 4. 返回
+    return ResponseResult.SUCCESS;
   }
 }

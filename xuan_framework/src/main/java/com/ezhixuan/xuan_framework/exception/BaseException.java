@@ -27,4 +27,8 @@ public class BaseException extends RuntimeException {
     this.code = FAIL;
     this.msg = msg;
   }
+
+  public String getMsg(){
+    return this.msg;
+  }
 }
