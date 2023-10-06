@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -27,9 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   @Resource private JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
-
-  @Resource private AuthenticationSuccessHandler authenticationSuccessHandler;
-  @Resource private AuthenticationFailureHandler authenticationFailureHandler;
   @Resource private AuthenticationEntryPoint authenticationEntryPoint;
   @Resource private AccessDeniedHandler accessDeniedHandler;
 
@@ -90,9 +85,6 @@ public class SecurityConfig {
     // 添加JWT过滤器
     http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     // 添加自定义处理器
-    //    http.formLogin()
-    //        .successHandler(authenticationSuccessHandler)
-    //        .failureHandler(authenticationFailureHandler);
     http.exceptionHandling()
         .authenticationEntryPoint(authenticationEntryPoint)
         .accessDeniedHandler(accessDeniedHandler);

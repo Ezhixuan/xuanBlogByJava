@@ -32,3 +32,6 @@ blog:
     tmpSecretKey: ${blog.txcos.tmpSecretKey} # 你的secretKey
     bucketName: ${blog.txcos.bucketName} # 你的bucketName
     region: ${blog.txcos.region} # 你仓库的地址
+  log:
+    enable: ${blog.log.enable} # 是否开启日志
+    path: ${blog.log.path} # 日志路径

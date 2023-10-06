@@ -1,5 +1,6 @@
 package com.ezhixuan.xuan_framework.domain.dto;
 
+import com.ezhixuan.xuan_framework.constant.PageConstant;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,10 +25,10 @@ public class PageDTO {
   /** 检查参数 */
   public void check() {
     if (this.pageNum == null || this.pageNum < 0) {
-      this.pageNum = 1;
+      this.pageNum = PageConstant.FIRST_OF_PAGE;
     }
     if (this.pageSize == null || this.pageSize < 0 || this.pageSize > 20) {
-      this.pageSize = 10;
+      this.pageSize = PageConstant.TEN_OF_SIZE;
     }
   }
 }

@@ -30,16 +30,18 @@ import org.springframework.stereotype.Service;
 public class BlogLoginServiceImpl implements BlogLoginService {
 
   @Resource private AuthenticationManager authenticationManager;
-  
+
   @Resource private RedisUtil redisUtil;
 
   @Override
   public ResponseResult<BlogUserLoginVo> login(UserLoginDTO userLoginDTO) {
     // 1. 用户认证
-    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword());
+    UsernamePasswordAuthenticationToken token =
+        new UsernamePasswordAuthenticationToken(
+            userLoginDTO.getUserName(), userLoginDTO.getPassword());
     Authentication authenticate = authenticationManager.authenticate(token);
-    if (ObjectUtil.isNull(authenticate)){
-      throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(),"用户名或密码错误");
+    if (ObjectUtil.isNull(authenticate)) {
+      throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(), "用户名或密码错误");
     }
     // 2. 获取用户id，生成jwt
     LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
@@ -56,7 +58,8 @@ public class BlogLoginServiceImpl implements BlogLoginService {
   @Override
   public ResponseResult<String> logout() {
     // 1. 获取userid
-    LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    LoginUser loginUser =
+        (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     // 2. 获取userid
     String userId = loginUser.getUser().getId().toString();
     // 3. 到redis中删除对应user数据

@@ -1,6 +1,6 @@
 package com.ezhixuan.xuan_framework.config;
 
-import com.ezhixuan.xuan_framework.properties.TencentCosProperties;
+import com.ezhixuan.xuan_framework.config.properties.TencentCosProperties;
 import com.ezhixuan.xuan_framework.utils.TencentCosUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

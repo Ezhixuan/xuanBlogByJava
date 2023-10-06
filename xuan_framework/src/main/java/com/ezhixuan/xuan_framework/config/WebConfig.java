@@ -1,6 +1,5 @@
 package com.ezhixuan.xuan_framework.config;
 
-
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
@@ -19,47 +18,49 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Slf4j
 public class WebConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-      // 设置允许跨域的路径
-        registry.addMapping("/**")
-                // 设置允许跨域请求的域名
-                .allowedOriginPatterns("*")
-                // 是否允许cookie
-                .allowCredentials(true)
-                // 设置允许的请求方式
-                .allowedMethods("GET", "POST", "DELETE", "PUT")
-                // 设置允许的header属性
-                .allowedHeaders("*")
-                // 跨域允许时间
-                .maxAge(3600);
-    }
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    // 设置允许跨域的路径
+    registry
+        .addMapping("/**")
+        // 设置允许跨域请求的域名
+        .allowedOriginPatterns("*")
+        // 是否允许cookie
+        .allowCredentials(true)
+        // 设置允许的请求方式
+        .allowedMethods("GET", "POST", "DELETE", "PUT")
+        // 设置允许的header属性
+        .allowedHeaders("*")
+        // 跨域允许时间
+        .maxAge(3600);
+  }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+    registry
+        .addResourceHandler("/webjars/**")
+        .addResourceLocations("classpath:/META-INF/resources/webjars/");
+  }
 
-    @Bean//使用@Bean注入fastJsonHttpMessageConvert
-    public HttpMessageConverter fastJsonHttpMessageConverters() {
-        //1.需要定义一个Convert转换消息的对象
-        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
-        FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
-        fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
-        // 防止Long类型数据过大导致前端接收数据丢失精度，将其转换为String
-        SerializeConfig.globalInstance.put(Long.class, ToStringSerializer.instance);
+  @Bean // 使用@Bean注入fastJsonHttpMessageConvert
+  public HttpMessageConverter fastJsonHttpMessageConverters() {
+    // 1.需要定义一个Convert转换消息的对象
+    FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+    FastJsonConfig fastJsonConfig = new FastJsonConfig();
+    fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+    fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
+    // 防止Long类型数据过大导致前端接收数据丢失精度，将其转换为String
+    SerializeConfig.globalInstance.put(Long.class, ToStringSerializer.instance);
 
-        fastJsonConfig.setSerializeConfig(SerializeConfig.globalInstance);
-        fastConverter.setFastJsonConfig(fastJsonConfig);
-        HttpMessageConverter<?> converter = fastConverter;
-        return converter;
-    }
+    fastJsonConfig.setSerializeConfig(SerializeConfig.globalInstance);
+    fastConverter.setFastJsonConfig(fastJsonConfig);
+    HttpMessageConverter<?> converter = fastConverter;
+    return converter;
+  }
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(fastJsonHttpMessageConverters());
-    }
-
+  @Override
+  public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+    converters.add(fastJsonHttpMessageConverters());
+  }
 }

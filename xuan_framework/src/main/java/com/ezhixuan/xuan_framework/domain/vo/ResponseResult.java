@@ -19,6 +19,7 @@ public class ResponseResult<T> implements Serializable {
   public static final String SUCCESS_MSG = "操作成功";
   public static final int FAIL_CODE = 500;
   public static final String FAIL_MSG = "操作失败";
+
   public static final ResponseResult<String> SUCCESS =
       new ResponseResult<>(SUCCESS_CODE, SUCCESS_MSG, null);
   public static final ResponseResult<String> FAIL = new ResponseResult<>(FAIL_CODE, FAIL_MSG, null);

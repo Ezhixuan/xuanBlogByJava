@@ -7,12 +7,8 @@ package com.ezhixuan.xuan_framework.constant;
  */
 public class PageConstant {
 
-    /**
-     * 10条记录
-     */
-    public static final Integer TEN_OF_SIZE = 10;
-    /**
-     * 首页
-     */
-    public static final Integer FIRST_OF_PAGE = 1;
+  /** 10条记录 */
+  public static final Integer TEN_OF_SIZE = 10;
+  /** 首页 */
+  public static final Integer FIRST_OF_PAGE = 1;
 }

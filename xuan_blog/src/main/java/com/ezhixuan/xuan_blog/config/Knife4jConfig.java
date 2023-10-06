@@ -19,21 +19,22 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 @Slf4j
 public class Knife4jConfig {
-    @Bean(value = "docket")
-    public Docket docket() {
-        log.info("正在生成接口文档");
-        ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("xuanBlog项目接口文档")
-                .version("1.0")
-                .description("xuanBlog项目接口文档")
-                .build();
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ezhixuan.xuan_blog.controller"))
-                .paths(PathSelectors.any())
-                .build();
-        return docket;
-    }
-    
+  @Bean(value = "docket")
+  public Docket docket() {
+    log.info("正在生成接口文档");
+    ApiInfo apiInfo =
+        new ApiInfoBuilder()
+            .title("xuanBlog项目接口文档")
+            .version("1.0")
+            .description("xuanBlog项目接口文档")
+            .build();
+    Docket docket =
+        new Docket(DocumentationType.SWAGGER_2)
+            .apiInfo(apiInfo)
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("com.ezhixuan.xuan_blog.controller"))
+            .paths(PathSelectors.any())
+            .build();
+    return docket;
+  }
 }

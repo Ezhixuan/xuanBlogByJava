@@ -1,4 +1,4 @@
-package com.ezhixuan.xuan_framework.properties;
+package com.ezhixuan.xuan_framework.config.properties;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

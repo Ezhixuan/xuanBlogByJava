@@ -13,4 +13,8 @@ public class RedisKeyConstant {
   public static final String ADMIN_LOGIN_USER_BY_ID = "admin:login:user:";
   /** 文章浏览量的key */
   public static final String ARTICLE_VIEW_COUNT_KEY = "article:view";
+  /** 热点文章缓存的key */
+  public static final String CACHE_HOT_ARTICLE = "cache:hot:article";
+  /** 文章缓存的key前缀，后面需要自行添加id组成key */
+  public static final String CACHE_ARTICLE_BY_ID = "cache:article:";
 }

@@ -26,30 +26,30 @@ public class ArticleController {
   @ApiOperation("新增文章")
   @PostMapping
   public ResponseResult<String> add(@RequestBody ArticleDTO articleDTO) {
-    return articleService.add(articleDTO);
+    return articleService.insertArticleSys(articleDTO);
   }
 
   @ApiOperation("文章分页查询")
   @GetMapping("list")
   public ResponseResult<PageVo> articleList(ArticlePageDTO articlePageDTO) {
-    return articleService.sysList(articlePageDTO);
+    return articleService.selectArticlePageSys(articlePageDTO);
   }
 
   @GetMapping("/{id}")
   @ApiOperation("根据id查询文章详情")
   public ResponseResult<Article> queryById(@PathVariable Long id) {
-    return articleService.querySysById(id);
+    return articleService.selectArticleSys(id);
   }
 
   @PutMapping()
   @ApiOperation("修改文章")
   public ResponseResult<String> update(@RequestBody ArticleDTO articleDTO) {
-    return articleService.update(articleDTO);
+    return articleService.updateArticleSys(articleDTO);
   }
   
   @DeleteMapping("/{id}")
     @ApiOperation("删除文章")
     public ResponseResult<String> delete(@PathVariable("id") List<Long> ids) {
-        return articleService.delete(ids);
+        return articleService.deleteArticleSys(ids);
     }
 }

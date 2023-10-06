@@ -60,6 +60,9 @@ public class RedisUtil {
    */
   public <T> T getValue( String key, Class<T> clazz) {
     Object o = redisTemplate.opsForValue().get(key);
+    if (ObjectUtils.isEmpty(o)){
+      return null;
+    }
     return cast(o, clazz);
   }
 

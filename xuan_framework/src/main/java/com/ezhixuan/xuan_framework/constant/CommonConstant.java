@@ -43,12 +43,8 @@ public class CommonConstant {
   /** 菜单类型（M目录 C菜单 F按钮） */
   public static final String MENU_TYPE_MENU = "M";
 
-  /**
-   * 角色状态（0正常 1停用）
-   */
+  /** 角色状态（0正常 1停用） */
   public static final String STATUS_NORMAL = "0";
-  /**
-   * 角色状态（0正常 1停用）
-   */
+  /** 角色状态（0正常 1停用） */
   public static final String STATUS_DISABLE = "1";
 }

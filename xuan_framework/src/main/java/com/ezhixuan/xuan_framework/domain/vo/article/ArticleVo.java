@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel("文章详情返回")
-public class ArticleDetailVo {
+public class ArticleVo {
 
   @ApiModelProperty("文章id")
   private Long id;

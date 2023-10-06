@@ -1,4 +1,4 @@
-package com.ezhixuan.xuan_blog.scheduling;
+package com.ezhixuan.xuan_blog.task;
 
 import com.ezhixuan.xuan_framework.constant.RedisKeyConstant;
 import com.ezhixuan.xuan_framework.domain.entity.Article;

@@ -2,16 +2,20 @@ package com.ezhixuan.xuan_framework.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.ezhixuan.xuan_framework.annotation.Log;
+import java.io.FileWriter;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @program: xuanBlog
@@ -23,66 +27,83 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 @Slf4j
 public class logAspect {
+  
+  @Value("${blog.log.path}")
+  private String path;
 
   @Pointcut("@annotation(com.ezhixuan.xuan_framework.annotation.Log)")
-  public void pt() {}
+  public void controllerRuntimeLogPointCut() {}
 
-  @Around("pt()")
-  public Object printLog(ProceedingJoinPoint pjp) throws Throwable {
+  /**
+   * 打印controller执行日志
+   *
+   * @param pjp 切点
+   * @return 原方法返回值
+   */
+  @SneakyThrows
+  @Around("controllerRuntimeLogPointCut()")
+  public Object printLog(ProceedingJoinPoint pjp) {
     Object proceed;
+    StringBuilder sb = new StringBuilder();
     try {
-      beforeProceed(pjp);
+      beforeProceed(pjp, sb);
       proceed = pjp.proceed();
-      afterProceed(proceed);
+      afterProceed(proceed, sb);
     } finally {
-      log.info("=======================end=======================" + System.lineSeparator());
+      sb.append("=======================end=======================").append(System.lineSeparator());
+      FileWriter fileWriter = new FileWriter(path, true);
+      fileWriter.write(sb.toString());
+      fileWriter.flush();
+      fileWriter.close();
     }
-
     return proceed;
   }
 
-  private void afterProceed(Object proceed) {
-    // 打印出参。JSON.toJSONString十FastJson提供的工具方法，能把数组转成JSON
-    log.info("返回参数   : {}", JSON.toJSONString(proceed));
-  }
-
-  private void beforeProceed(ProceedingJoinPoint pjp) {
-    // ServletRequestAttributes是RequestAttributes是spring接口的实现类
-    ServletRequestAttributes requestAttributes =
-        (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-
-    // 下面那行就可以拿到请求的报文了，其中有我们需要的url、请求方式、ip。这里拿到的request会在下面的log中大量使用
-    HttpServletRequest request = requestAttributes.getRequest();
-
-    // 获取被增强方法的注解对象，例如获取UserController类的updateUserInfo方法上一行的@mySystemlog注解
-    // getSystemlog是我们下面写的方法
+  /**
+   * 原代码执行前执行
+   *
+   * @param pjp 切点
+   * @param sb 日志
+   */
+  @SneakyThrows
+  private void beforeProceed(ProceedingJoinPoint pjp, StringBuilder sb) {
+    RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+    HttpServletRequest request =
+        (HttpServletRequest)
+            Objects.requireNonNull(requestAttributes)
+                .resolveReference(RequestAttributes.REFERENCE_REQUEST);
     Log systemlog = getLogAnnotation(pjp);
-
-    log.info(
-        "======================Start======================"); // 下面的几个log输出，第一个参数{}表示占位符，具体的值是第二个参数的变量
-    // 打印请求 URL
-    log.info("请求URL   : {}", request.getRequestURL());
-    // 打印描述信息，例如获取UserController类的updateUserInfo方法上一行的@mySystemlog注解的描述信息
-    log.info("接口描述   : {}", systemlog.businessName());
-    // 打印 Http method
-    log.info("请求方式   : {}", request.getMethod());
-    // 打印调用 controller 的全路径(全类名)、方法名
-    log.info(
-        "请求类名   : {}.{}",
-        pjp.getSignature().getDeclaringTypeName(),
-        ((MethodSignature) pjp.getSignature()).getName());
-    // 打印请求的 IP
-    log.info("访问IP    : {}", request.getRemoteHost());
-    // 打印请求入参。JSON.toJSONString十FastJson提供的工具方法，能把数组转成JSON
-    log.info("传入参数   : {}", JSON.toJSONString(pjp.getArgs()));
+    sb.append("======================Start======================").append(System.lineSeparator());
+    sb.append("请求URL   : ").append(request.getRequestURI()).append(System.lineSeparator());
+    sb.append("接口描述   : ").append(systemlog.businessName()).append(System.lineSeparator());
+    sb.append("请求方式   : ").append(request.getMethod()).append(System.lineSeparator());
+    sb.append("请求类名   : ")
+        .append(pjp.getSignature().getDeclaringTypeName())
+        .append(".")
+        .append(pjp.getSignature().getName())
+        .append(System.lineSeparator());
+    sb.append("访问IP    : ").append(request.getRemoteHost()).append(System.lineSeparator());
+    sb.append("传入参数   : ").append(JSON.toJSONString(pjp.getArgs())).append(System.lineSeparator());
   }
 
+  /**
+   * 原代码执行后执行
+   *
+   * @param proceed 原方法返回值
+   * @param sb 日志
+   */
+  private void afterProceed(Object proceed, StringBuilder sb) {
+    sb.append("返回参数   : ").append(JSON.toJSONString(proceed)).append(System.lineSeparator());
+  }
+
+  /**
+   * 获取Log注解
+   *
+   * @param pjp 切点
+   * @return Log注解
+   */
   private Log getLogAnnotation(ProceedingJoinPoint pjp) {
-    // Signature是spring提供的接口，MethodSignature是Signature的子接口
-    MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
-    // mySystemlog是我们写的自定义注解的接口
-    // 下面那行就能获取被增强方法的注解对象，例如获取UserController类的updateUserInfo方法上一行的@mySystemlog注解
-    Log systemlog = methodSignature.getMethod().getAnnotation(Log.class);
-    return systemlog;
+    MethodSignature signature = (MethodSignature) pjp.getSignature();
+    return signature.getMethod().getAnnotation(Log.class);
   }
 }
