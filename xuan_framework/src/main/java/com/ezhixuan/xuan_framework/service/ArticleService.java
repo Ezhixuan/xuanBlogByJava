@@ -45,7 +45,7 @@ public interface ArticleService extends IService<Article> {
      * @param id
      * @return
      */
-    ResponseResult<String> updateViewCount(Long id);
+    ResponseResult<String> updateViewCountById(Long id);
 
     /**
      * 新增文章
@@ -67,7 +67,7 @@ public interface ArticleService extends IService<Article> {
      * @param id
      * @return
      */
-    ResponseResult<Article> selectArticleSys(Long id);
+    ResponseResult<Article> selectArticleByIdSys(Long id);
 
     /**
      * 后台修改文章
@@ -81,5 +81,5 @@ public interface ArticleService extends IService<Article> {
      * @param ids
      * @return
      */
-    ResponseResult<String> deleteArticleSys(List<Long> ids);
+    ResponseResult<String> deleteArticleByIdSys(List<Long> ids);
 }

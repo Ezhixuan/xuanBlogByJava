@@ -19,8 +19,13 @@ import lombok.NoArgsConstructor;
 public class CategoryVo {
     @ApiModelProperty("分类id")
     private Long id;
+
+    @ApiModelProperty("状态（0正常 1停用）")
+    private String status;
+
     @ApiModelProperty("分类名称")
     private String name;
+
     @ApiModelProperty("分类描述")
     private String description;
 }

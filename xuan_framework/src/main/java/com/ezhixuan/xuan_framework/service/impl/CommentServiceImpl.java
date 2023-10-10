@@ -35,48 +35,42 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
   /**
    * 评论列表
    *
-   * @param commentPageDTO
-   * @return
+   * @param commentPageDTO 分页参数
+   * @return 评论列表
    */
   @Override
-  public ResponseResult<PageVo> commentList(Integer type, CommentPageDTO commentPageDTO) {
-    // 1. 校验参数
+  public ResponseResult<PageVo> selectCommentPage(Integer type, CommentPageDTO commentPageDTO) {
     commentPageDTO.check();
     if (CommonConstant.ARTICLE_COMMENT.equals(type) && commentPageDTO.getArticleId() == null) {
+      // 文章评论时文章id不能为空
       throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "文章id不能为空");
     }
-    // 2. 构建查询条件
-    // 查询改文章的根评论
+    // 构建查询条件
     LambdaQueryWrapper<Comment> commentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-    // 2.1 根据文章id查询
-    commentLambdaQueryWrapper.eq(
-        CommonConstant.ARTICLE_COMMENT.equals(type),
-        Comment::getArticleId,
-        commentPageDTO.getArticleId());
-    // 2.2 查询文章根评论
     commentLambdaQueryWrapper.eq(Comment::getRootId, CommonConstant.ROOT_COMMENT);
-    // 2.3 根据类型查询
     commentLambdaQueryWrapper.eq(Comment::getType, type);
-    // 2.4 根据发布时间倒序排序
+    commentLambdaQueryWrapper.eq(
+            CommonConstant.ARTICLE_COMMENT.equals(type),
+            Comment::getArticleId,
+            commentPageDTO.getArticleId());
     commentLambdaQueryWrapper.orderByDesc(Comment::getCreateTime);
-    // 3. 构建分页查询
+    // 构建分页查询
     Page<Comment> commentPage =
         new Page<>(commentPageDTO.getPageNum(), commentPageDTO.getPageSize());
     page(commentPage, commentLambdaQueryWrapper);
-    // 4. 查询根评论下的子评论
-    List<CommentVo> commentVos = queryUserNameAnd2ListCommentVo(commentPage.getRecords());
+    // 查询根评论下的子评论
+    List<CommentVo> commentVos = selectUserNameByComments(commentPage.getRecords());
     commentVos.forEach(
         commentVo -> {
-          // 4.1 查询子评论
           List<Comment> childrenComment =
               list(
                   Wrappers.<Comment>lambdaQuery()
                       .eq(Comment::getRootId, commentVo.getId())
                       .orderByAsc(Comment::getCreateTime));
-          List<CommentVo> childrenCommentVo = queryUserNameAnd2ListCommentVo(childrenComment);
+          List<CommentVo> childrenCommentVo = selectUserNameByComments(childrenComment);
           commentVo.setChildren(childrenCommentVo);
         });
-    // 5. 封装返回
+    // 封装返回
     PageVo pageVo = new PageVo(commentVos, commentPage.getTotal());
     return ResponseResult.okResult(pageVo);
   }
@@ -84,45 +78,36 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
   /**
    * 查询评论者的用户名和被评论的用户的用户名并且转换为List<CommentVo>的类型
    *
-   * @param comments
-   * @return
+   * @param comments 评论列表
+   * @return 评论vo列表
    */
-  public List<CommentVo> queryUserNameAnd2ListCommentVo(List<Comment> comments) {
-    // 1. 转换
+  public List<CommentVo> selectUserNameByComments(List<Comment> comments) {
+    // 转换
     List<CommentVo> commentVos = BeanUtil.copyBeanList(comments, CommentVo.class);
-    // 2. 遍历
     commentVos.forEach(
         commentVo -> {
-          // 2.1 查询评论者的用户名
-          String userName = userDao.queryUserName(commentVo.getCreateBy());
+          String userName = userDao.selectUserName(commentVo.getCreateBy());
           commentVo.setUsername(userName);
-          // 2.2 查询被评论用户的用户名
           // 根评论是没有被评论用户的
           if (!CommonConstant.ROOT_COMMENT.equals(commentVo.getToCommentUserId())) {
-            String commentedName = userDao.queryUserName(commentVo.getToCommentUserId());
+            String commentedName = userDao.selectUserName(commentVo.getToCommentUserId());
             commentVo.setToCommentUserName(commentedName);
           }
         });
-    // 3. 返回
     return commentVos;
   }
 
   /**
    * 添加评论
    *
-   * @param commentDTO
-   * @return
+   * @param commentDTO 评论dto
+   * @return 添加结果
    */
   @Override
-  public ResponseResult<String> addComment(CommentDTO commentDTO) {
-    // 1. 评论不能为空
-    if (commentDTO == null || commentDTO.getContent() == null) {
-      throw new BaseException(AppHttpCodeEnum.DATA_NOT_EXIST.getCode(), "评论不能为空");
-    }
-    // 2. 保存
+  public ResponseResult<String> insertComment(CommentDTO commentDTO) {
+    // 保存
     Comment comment = BeanUtil.copyBean(commentDTO, Comment.class);
     save(comment);
-    // 3. 返回
     return ResponseResult.SUCCESS;
   }
 }

@@ -13,7 +13,7 @@ import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.menu.RoutersVo;
 import com.ezhixuan.xuan_framework.domain.vo.user.SysUserInfo;
 import com.ezhixuan.xuan_framework.domain.vo.user.UserInfoVo;
-import com.ezhixuan.xuan_framework.exception.UserLoginException;
+import com.ezhixuan.xuan_framework.exception.BaseException;
 import com.ezhixuan.xuan_framework.service.LoginService;
 import com.ezhixuan.xuan_framework.service.MenuService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
@@ -27,7 +27,6 @@ import javax.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,40 +41,39 @@ public class LoginServiceImpl implements LoginService {
   @Resource private AuthenticationManager authenticationManager;
   @Resource private MenuDao menuDao;
   @Resource private RedisUtil redisUtil;
-  
   @Resource private MenuService menuService;
 
   @Override
-  public ResponseResult<Map<String, String>> login(UserLoginDTO userLoginDTO) {
-    // 1. 用户认证
+  public ResponseResult<Map<String, String>> userLoginSys(UserLoginDTO userLoginDTO) {
+    // 用户认证
     UsernamePasswordAuthenticationToken token =
         new UsernamePasswordAuthenticationToken(
             userLoginDTO.getUserName(), userLoginDTO.getPassword());
     Authentication authenticate = authenticationManager.authenticate(token);
     if (ObjectUtil.isNull(authenticate)) {
-      throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(), "用户名或密码错误");
+      throw new BaseException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(), "用户名或密码错误");
     }
-    // 2. 获取用户id，生成jwt
+    // 获取用户id，生成jwt
     LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
     String userId = loginUser.getUser().getId().toString();
     String jwt = JwtUtil.createJWT(userId);
-    // 3. 将用户信息存入redis中
-    redisUtil.setValue(RedisKeyConstant.ADMIN_LOGIN_USER_BY_ID + userId, loginUser);
-    // 4. 返回jwt
+    // 将用户信息存入redis中
+    redisUtil.setValue(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId, loginUser);
+    // 返回jwt
     Map<String, String> map = new HashMap<>();
     map.put("token", jwt);
     return ResponseResult.okResult(map);
   }
 
+  /**
+   * 退出登录
+   * @return 处理结果
+   */
   @Override
-  public ResponseResult<String> logout() {
-    // 1. 获取userid
-    LoginUser loginUser =
-        (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    // 2. 获取userid
-    String userId = loginUser.getUser().getId().toString();
-    // 3. 到redis中删除对应user数据
-    redisUtil.cleanCache(RedisKeyConstant.ADMIN_LOGIN_USER_BY_ID + userId);
+  public ResponseResult<String> userLogoutSys() {
+    Long userId = UserUtils.getUser().getId();
+    // 到redis中删除对应user数据
+    redisUtil.cleanCache(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId);
     return ResponseResult.SUCCESS;
   }
 
@@ -85,25 +83,18 @@ public class LoginServiceImpl implements LoginService {
    * @return
    */
   @Override
-  public ResponseResult<SysUserInfo> getInfo() {
-    // 1. 获取当前用户
+  public ResponseResult<SysUserInfo> selectUserInfoSys() {
     LoginUser loginUser = UserUtils.getLoginUser();
-    if (loginUser == null) {
-      throw new UserLoginException(AppHttpCodeEnum.LOGIN_FAILURE.getCode(), "用户未登录");
-    }
-    // 2. 查询当前用户的角色信息
-    List<String> userRole = loginUser.getRoles();
-    // 3. 权限，如果用户角色信息包含超级管理员，返回所有权限
     List<String> permissions = loginUser.getPermissions();
-    if (userRole.contains(CommonConstant.ADMIN)) {
-      permissions = menuDao.queryAllChildrenMenu();
+    if (UserUtils.isAdmin()){
+      // 当前用户为超级管理员
+      permissions =menuDao.queryAllChildrenMenu();
     }
-    // 3. 获取用户信息
     User user = loginUser.getUser();
     UserInfoVo userInfoVo = BeanUtil.copyBean(user, UserInfoVo.class);
-    // 4. 封装返回
+    // 封装返回
     SysUserInfo userInfo =
-        SysUserInfo.builder().permissions(permissions).roles(userRole).user(userInfoVo).build();
+        SysUserInfo.builder().permissions(permissions).roles(loginUser.getRoles()).user(userInfoVo).build();
     return ResponseResult.okResult(userInfo);
   }
 
@@ -113,11 +104,8 @@ public class LoginServiceImpl implements LoginService {
    * @return
    */
   @Override
-  public ResponseResult<RoutersVo> getRouters() {
-    // 1. 获取当前用户
+  public ResponseResult<RoutersVo> selectUserRoutersSys() {
     LoginUser loginUser = UserUtils.getLoginUser();
-    Long userId = loginUser.getUser().getId();
-    // 2. 查询当前用户的角色信息
     List<String> userRole = loginUser.getRoles();
     List<Menu> menus = null;
     if (userRole.contains(CommonConstant.ADMIN)) {
@@ -125,9 +113,9 @@ public class LoginServiceImpl implements LoginService {
     } else {
       menus = menuDao.queryRootMenuByUserId(loginUser.getUser().getId());
     }
-    // 3. 构建根目录
+    // 构建树状结构
     menus = menuService.buildTree(menus);
-    // 4. 封装返回
+    // 封装返回
     RoutersVo routersVo = new RoutersVo();
     routersVo.setMenus(menus);
     return ResponseResult.okResult(routersVo);

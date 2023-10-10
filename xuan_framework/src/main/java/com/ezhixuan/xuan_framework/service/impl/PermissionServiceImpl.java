@@ -12,13 +12,19 @@ import org.springframework.stereotype.Service;
  */
 @Service("ps")
 public class PermissionServiceImpl implements PermissionService{
+
+    /**
+     * 判断用户是否具有该权限
+     * @param permission 权限
+     * @return 是否具有该权限
+     */
     @Override
     public boolean hasPermission(String permission) {
-        // 1. 管理员具有所有权限
+        // 管理员具有所有权限
         if (UserUtils.isAdmin()){
             return true;
         }
-        // 2. 查询用户当前权限列表，判断是否存在该permission
+        // 查询用户当前权限列表，判断是否存在该permission
         return UserUtils.getLoginUser().getRoles().contains(permission);
     }
 }

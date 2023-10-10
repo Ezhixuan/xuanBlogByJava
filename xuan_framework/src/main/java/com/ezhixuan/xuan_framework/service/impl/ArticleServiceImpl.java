@@ -29,7 +29,6 @@ import com.ezhixuan.xuan_framework.utils.UserUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,6 +141,61 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
   }
 
   /**
+   * 后台查询文章列表
+   *
+   * @param articlePageDTO 分页Dto
+   * @return 分页文章
+   */
+  @Override
+  public ResponseResult<PageVo> selectArticlePageSys(ArticlePageDTO articlePageDTO) {
+    // 校验参数
+    articlePageDTO.check();
+    // 判断当前登录用户是否是管理员
+    LambdaQueryWrapper<Article> articleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    if (!UserUtils.isSystem()) {
+      // 不是管理员只能查看到自己的文章
+      articleLambdaQueryWrapper.eq(Article::getCreateBy, UserUtils.getUser().getId());
+    }
+    articleLambdaQueryWrapper.like(
+            StringUtils.hasText(articlePageDTO.getTitle()),
+            Article::getTitle,
+            articlePageDTO.getTitle());
+    articleLambdaQueryWrapper.like(
+            StringUtils.hasText(articlePageDTO.getSummary()),
+            Article::getSummary,
+            articlePageDTO.getSummary());
+    articleLambdaQueryWrapper.orderByDesc(Article::getCreateTime);
+    // 分页
+    Page<Article> articlePage =
+            new Page<>(articlePageDTO.getPageNum(), articlePageDTO.getPageSize());
+    page(articlePage, articleLambdaQueryWrapper);
+    // 封装返回
+    List<ArticleSysVo> articleSysVos =
+            BeanUtil.copyBeanList(articlePage.getRecords(), ArticleSysVo.class);
+    PageVo pageVo = new PageVo(articleSysVos, articlePage.getTotal());
+    return ResponseResult.okResult(pageVo);
+  }
+
+  /**
+   * 后台查询文章
+   *
+   * @param id 文章id
+   * @return 文章信息
+   */
+  @Override
+  public ResponseResult<Article> selectArticleByIdSys(Long id) {
+    Article article = getById(id);
+    List<ArticleTag> list =
+            articleTagService.list(
+                    Wrappers.<ArticleTag>lambdaQuery().eq(ArticleTag::getArticleId, article.getId()));
+    List<Long> tags = list.stream().map(ArticleTag::getTagId).collect(Collectors.toList());
+    // 封装返回
+    ArticleSysVo articleSysVo = BeanUtil.copyBean(article, ArticleSysVo.class);
+    articleSysVo.setTags(tags);
+    return ResponseResult.okResult(articleSysVo);
+  }
+
+  /**
    * 浏览量统计
    *
    * @param id 文章id
@@ -149,7 +203,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
    */
   @Override
   @Transactional
-  public ResponseResult<String> updateViewCount(@NotNull(message = "ArticleId不能为空") Long id) {
+  public ResponseResult<String> updateViewCountById(Long id) {
     // 查询redis缓存中是否包含所需数据,如果包含则添加,如果不包含则查询数据库
     String key = RedisKeyConstant.ARTICLE_VIEW_COUNT_KEY;
     Long count = redisUtil.getHash(key, id.toString(), Long.class);
@@ -159,6 +213,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
       redisUtil.setHash(key, id.toString(), count);
     }
     redisUtil.incrHash(key, id.toString());
+    // 返回
+    return ResponseResult.SUCCESS;
+  }
+
+  /**
+   * 后台修改文章
+   *
+   * @param articleDTO 文章信息
+   * @return 处理结果
+   */
+  @Override
+  @Transactional
+  public ResponseResult<String> updateArticleSys(ArticleDTO articleDTO) {
+    // 如果tag有修改，需要更新articleTag表
+    if (!ObjectUtils.isEmpty(articleDTO.getTags())) {
+      // 删除原有关系
+      articleTagService.remove(
+              Wrappers.<ArticleTag>lambdaQuery().eq(ArticleTag::getArticleId, articleDTO.getId()));
+      List<ArticleTag> articleTags =
+              articleDTO.getTags().stream()
+                      .map(tag -> new ArticleTag(articleDTO.getId(), tag))
+                      .collect(Collectors.toList());
+      articleTagService.saveBatch(articleTags);
+    }
+    // 封装更新
+    Article article = BeanUtil.copyBean(articleDTO, Article.class);
+    updateById(article);
     // 返回
     return ResponseResult.SUCCESS;
   }
@@ -185,88 +266,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
   }
 
   /**
-   * 后台查询文章列表
-   *
-   * @param articlePageDTO 分页Dto
-   * @return 分页文章
-   */
-  @Override
-  public ResponseResult<PageVo> selectArticlePageSys(ArticlePageDTO articlePageDTO) {
-    // 校验参数
-    articlePageDTO.check();
-    // 判断当前登录用户是否是管理员
-    LambdaQueryWrapper<Article> articleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-    if (!UserUtils.isSystem()) {
-      // 不是管理员只能查看到自己的文章
-      articleLambdaQueryWrapper.eq(Article::getCreateBy, UserUtils.getUser().getId());
-    }
-    articleLambdaQueryWrapper.like(
-        StringUtils.hasText(articlePageDTO.getTitle()),
-        Article::getTitle,
-        articlePageDTO.getTitle());
-    articleLambdaQueryWrapper.like(
-        StringUtils.hasText(articlePageDTO.getSummary()),
-        Article::getSummary,
-        articlePageDTO.getSummary());
-    articleLambdaQueryWrapper.orderByDesc(Article::getCreateTime);
-    // 分页
-    Page<Article> articlePage =
-        new Page<>(articlePageDTO.getPageNum(), articlePageDTO.getPageSize());
-    page(articlePage, articleLambdaQueryWrapper);
-    // 封装返回
-    List<ArticleSysVo> articleSysVos =
-        BeanUtil.copyBeanList(articlePage.getRecords(), ArticleSysVo.class);
-    PageVo pageVo = new PageVo(articleSysVos, articlePage.getTotal());
-    return ResponseResult.okResult(pageVo);
-  }
-
-  /**
-   * 后台查询文章
-   *
-   * @param id 文章id
-   * @return 文章信息
-   */
-  @Override
-  public ResponseResult<Article> selectArticleSys(@NotNull(message = "文章id不能为空") Long id) {
-    Article article = getById(id);
-    List<ArticleTag> list =
-        articleTagService.list(
-            Wrappers.<ArticleTag>lambdaQuery().eq(ArticleTag::getArticleId, article.getId()));
-    List<Long> tags = list.stream().map(ArticleTag::getTagId).collect(Collectors.toList());
-    // 封装返回
-    ArticleSysVo articleSysVo = BeanUtil.copyBean(article, ArticleSysVo.class);
-    articleSysVo.setTags(tags);
-    return ResponseResult.okResult(articleSysVo);
-  }
-
-  /**
-   * 后台修改文章
-   *
-   * @param articleDTO 文章信息
-   * @return 处理结果
-   */
-  @Override
-  @Transactional
-  public ResponseResult<String> updateArticleSys(ArticleDTO articleDTO) {
-    // 如果tag有修改，需要更新articleTag表
-    if (!ObjectUtils.isEmpty(articleDTO.getTags())) {
-      // 删除原有关系
-      articleTagService.remove(
-          Wrappers.<ArticleTag>lambdaQuery().eq(ArticleTag::getArticleId, articleDTO.getId()));
-      List<ArticleTag> articleTags =
-          articleDTO.getTags().stream()
-              .map(tag -> new ArticleTag(articleDTO.getId(), tag))
-              .collect(Collectors.toList());
-      articleTagService.saveBatch(articleTags);
-    }
-    // 封装更新
-    Article article = BeanUtil.copyBean(articleDTO, Article.class);
-    updateById(article);
-    // 返回
-    return ResponseResult.SUCCESS;
-  }
-
-  /**
    * 后台删除文章
    *
    * @param ids 文章id
@@ -274,7 +273,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
    */
   @Override
   @Transactional
-  public ResponseResult<String> deleteArticleSys(@NotEmpty(message = "请选择要删除的文章") List<Long> ids) {
+  public ResponseResult<String> deleteArticleByIdSys(List<Long> ids) {
     // 删除对应关系
     ids.forEach(
         id ->

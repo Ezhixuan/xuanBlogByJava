@@ -1,5 +1,9 @@
 package com.ezhixuan.xuan_framework.domain.dto.article;
 
+import com.ezhixuan.xuan_framework.handler.validated.Insert;
+import com.ezhixuan.xuan_framework.handler.validated.Update;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -7,36 +11,67 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author ezhixuan @Description 文章DTO
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel("文章DTO")
 public class ArticleDTO {
 
+  @NotNull(message = "文章id不能为空", groups = Update.class)
+  @ApiModelProperty("文章id")
   private Long id;
-  // 标题
-  @NotBlank(message = "标题不能为空")
+
+  @NotBlank(
+      message = "标题不能为空",
+      groups = {Insert.class, Update.class})
+  @ApiModelProperty("文章标题")
   private String title;
-  // 文章内容
-  @NotBlank(message = "文章内容不能为空")
+
+  @NotBlank(
+      message = "文章内容不能为空",
+      groups = {Insert.class, Update.class})
+  @ApiModelProperty("文章内容")
   private String content;
-  // 文章摘要
-  @NotBlank(message = "文章摘要不能为空")
+
+  @NotBlank(
+      message = "文章摘要不能为空",
+      groups = {Insert.class, Update.class})
+  @ApiModelProperty("文章摘要")
   private String summary;
-  // 所属分类id
-  @NotNull(message = "所属分类不能为空")
+
+  @NotNull(
+      message = "所属分类不能为空",
+      groups = {Insert.class, Update.class})
+  @ApiModelProperty("所属分类id")
   private Long categoryId;
-  // 缩略图
+
+  @ApiModelProperty("文章缩略图")
   private String thumbnail;
-  // 是否置顶（0否，1是）
+
+  @NotBlank(
+      message = "是否置顶不能为空",
+      groups = {Insert.class, Update.class})
+  @ApiModelProperty("是否置顶")
   private String isTop;
-  // 状态（0已发布，1草稿）
-  @NotBlank(message = "状态不能为空")
+
+  @NotBlank(
+      message = "状态不能为空",
+      groups = {Insert.class})
+  @ApiModelProperty("状态")
   private String status;
-  // 访问量
+
+  @ApiModelProperty("浏览量")
   private Long viewCount;
-  // 是否允许评论 1是，0否
-  @NotBlank(message = "是否允许评论不能为空")
+
+  @NotBlank(
+      message = "是否允许评论不能为空",
+      groups = {Insert.class})
+  @ApiModelProperty("是否允许评论")
   private String isComment;
 
+  @ApiModelProperty("标签id")
   private List<Long> tags;
 }

@@ -20,12 +20,12 @@ public interface CommentService extends IService<Comment> {
      * @param commentPageDTO
      * @return
      */
-    ResponseResult<PageVo> commentList(Integer type, CommentPageDTO commentPageDTO);
+    ResponseResult<PageVo> selectCommentPage(Integer type, CommentPageDTO commentPageDTO);
 
     /**
      * 添加评论
      * @param commentDTO
      * @return
      */
-    ResponseResult<String> addComment(CommentDTO commentDTO);
+    ResponseResult<String> insertComment(CommentDTO commentDTO);
 }

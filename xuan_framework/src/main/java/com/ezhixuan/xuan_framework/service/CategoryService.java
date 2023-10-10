@@ -1,6 +1,7 @@
 package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ezhixuan.xuan_framework.domain.dto.category.CategoryDTO;
 import com.ezhixuan.xuan_framework.domain.dto.category.CategoryPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Category;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
@@ -23,19 +24,19 @@ public interface CategoryService extends IService<Category> {
      *
      * @return
      */
-    List<CategoryVo> getCategoryList();
+    ResponseResult<List<CategoryVo>> selectCategoryList();
 
     /**
-     * 展示所有发布的分类
+     * 后台 展示所有发布的分类
      * @return
      */
-    ResponseResult<List<CategoryVo>> listAllCategory();
+    ResponseResult<List<CategoryVo>> selectCategoryListSys();
 
     /**
      * 导出excel
      * @param response
      */
-    void export(HttpServletResponse response);
+    void exportExcelSys(HttpServletResponse response);
 
     /**
      * 分类列表
@@ -43,12 +44,34 @@ public interface CategoryService extends IService<Category> {
      * @param categoryDTO
      * @return
      */
-    ResponseResult<PageVo> queryList(CategoryPageDTO categoryDTO);
+    ResponseResult<PageVo> selectCategoryPageSys(CategoryPageDTO categoryDTO);
 
     /**
      * 删除分类
      * @param ids
      * @return
      */
-    ResponseResult<String> delete(List<Long> ids);
+    ResponseResult<String> deleteCategoryByIdSys(List<Long> ids);
+
+    /**
+     * 新增分类
+     * @param categoryDTO
+     * @return
+     */
+    ResponseResult<String> insertCategorySys(CategoryDTO categoryDTO);
+
+    /**
+     * 修改分类
+     * @param categoryDTO
+     * @return
+     */
+    ResponseResult<String> updateCategoryByIdSys(CategoryDTO categoryDTO);
+
+    /**
+     * 根据id查询分类
+     *
+     * @param id
+     * @return
+     */
+    ResponseResult<CategoryVo> selectCategoryByIdSys(Long id);
 }

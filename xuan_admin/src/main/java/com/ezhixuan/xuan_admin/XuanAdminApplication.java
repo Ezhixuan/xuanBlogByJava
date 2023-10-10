@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @create: 2023-09-23 16:52
  */
 @SpringBootApplication
-@ComponentScan("com.ezhixuan")
+@ComponentScan({"com.ezhixuan.xuan_framework","com.ezhixuan.xuan_admin"})
 public class XuanAdminApplication {
 
   public static void main(String[] args) {

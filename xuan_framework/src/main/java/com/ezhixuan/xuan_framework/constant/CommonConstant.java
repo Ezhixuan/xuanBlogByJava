@@ -47,4 +47,8 @@ public class CommonConstant {
   public static final String STATUS_NORMAL = "0";
   /** 角色状态（0正常 1停用） */
   public static final String STATUS_DISABLE = "1";
+
+  public static final String SYSTEM = "1";
+  /** 普通用户 */
+  public static final Long ROLE_NORMAL = 2L;
 }

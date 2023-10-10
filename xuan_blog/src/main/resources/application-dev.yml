@@ -1,6 +1,0 @@
-blog:
-  txcos:
-    tmpSecretId: AKIDT1WqJfqz6780g8RaZTXWJD8Vr1APVOBl # 你的secretId
-    tmpSecretKey: Y1QRN8rbP3c6j8MRK2XqBWt8NTKxOjwC # 你的secretKey
-    bucketName: ezhixuan-1320543151 # 你的bucketName
-    region: ap-nanjing # 你仓库的地址

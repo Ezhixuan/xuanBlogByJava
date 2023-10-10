@@ -3,7 +3,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserInfoDTO;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserPageDTO;
 import com.ezhixuan.xuan_framework.domain.dto.user.UserRegisterDTO;
-import com.ezhixuan.xuan_framework.domain.dto.user.UserSaveDTO;
+import com.ezhixuan.xuan_framework.domain.dto.user.UserDTO;
 import com.ezhixuan.xuan_framework.domain.entity.User;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
@@ -24,42 +24,42 @@ public interface UserService extends IService<User> {
      * 用户信息
      * @return
      */
-    ResponseResult<UserInfoVo> userInfo();
+    ResponseResult<UserInfoVo> selectUser();
 
     /**
      * 修改用户信息
      * @param userInfoDTO
      * @return
      */
-    ResponseResult<String> updateUserInfo(UserInfoDTO userInfoDTO);
+    ResponseResult<String> updateUser(UserInfoDTO userInfoDTO);
 
     /**
      * 用户注册
      * @param userRegisterDTO
      * @return
      */
-    ResponseResult<String> register(UserRegisterDTO userRegisterDTO);
+    ResponseResult<String> insertUser(UserRegisterDTO userRegisterDTO);
 
     /**
      * 用户列表
      * @param userDto
      * @return
      */
-    ResponseResult<PageVo> queryList(UserPageDTO userDto);
+    ResponseResult<PageVo> selectUserPageSys(UserPageDTO userDto);
 
     /**
      * 新增用户
      * @param userDto
      * @return
      */
-    ResponseResult<String> saveByDto(UserSaveDTO userDto);
+    ResponseResult<String> insertUserSys(UserDTO userDto);
 
     /**
      * 删除用户
      * @param ids
      * @return
      */
-    ResponseResult<String> delete(List<Long> ids);
+    ResponseResult<String> deleteUserByIdSys(List<Long> ids);
 
     /**
      * 获取用户信息
@@ -67,13 +67,13 @@ public interface UserService extends IService<User> {
      * @param id
      * @return
      */
-    ResponseResult<UserQueryVo> query(Long id);
+    ResponseResult<UserQueryVo> selectUserByIdSys(Long id);
 
     /**
      * 修改用户信息
      * @param userDto
      * @return
      */
-    ResponseResult<String> updateByDto(UserSaveDTO userDto);
+    ResponseResult<String> updateUserSys(UserDTO userDto);
 }
 

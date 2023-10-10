@@ -22,40 +22,40 @@ public interface TagService extends IService<Tag> {
      * 标签列表
      * @return
      */
-    ResponseResult<PageVo> tagList(TagPageDTO tagPageDTO);
+    ResponseResult<PageVo> selectTagPageSys(TagPageDTO tagPageDTO);
 
     /**
      * 保存标签
      * @param tagDTO
      * @return
      */
-    ResponseResult<String> save(TagDTO tagDTO);
+    ResponseResult<String> insertTagSys(TagDTO tagDTO);
 
     /**
      * 删除标签
      * @param ids
      * @return
      */
-    ResponseResult<String> deleteTag(List<Long> ids);
+    ResponseResult<String> deleteTagByIdSys(List<Long> ids);
 
     /**
      * 获取标签
      * @return
      */
-    ResponseResult<TagVo> getTag(Long id);
+    ResponseResult<TagVo> selectTagByIdSys(Long id);
 
     /**
      * 更新标签
      * @param tagDTO
      * @return
      */
-    ResponseResult<String> updateTag(TagDTO tagDTO);
+    ResponseResult<String> updateTagSys(TagDTO tagDTO);
 
     /**
      * 获取所有标签
      * @return
      */
-    ResponseResult<List<TagVo>> listAllTag();
+    ResponseResult<List<TagVo>> selectTagListSys();
 
 }
 

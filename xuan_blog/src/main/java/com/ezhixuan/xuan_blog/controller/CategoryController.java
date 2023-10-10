@@ -29,8 +29,7 @@ public class CategoryController {
     @Log(businessName = "分类列表")
     @ApiOperation("分类列表")
     @GetMapping("/getCategoryList")
-    public ResponseResult<List<CategoryVo>> getCategoryList(){
-        List<CategoryVo> categoryList = categoryService.getCategoryList();
-        return ResponseResult.okResult(categoryList);
+    public ResponseResult<List<CategoryVo>> selectCategoryList(){
+        return categoryService.selectCategoryList();
     }
 }

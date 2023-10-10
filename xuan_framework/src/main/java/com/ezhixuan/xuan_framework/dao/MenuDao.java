@@ -21,5 +21,5 @@ public interface MenuDao extends BaseMapper<Menu> {
 
     List<Menu> queryRootMenuByUserId(@Param("userId") Long userId);
 
-    List<Menu> queryChildrenMenuById(@Param("menuId") Long menuId);
+    List<Menu> queryChildrenMenuByParentId(@Param("menuId") Long menuId);
 }

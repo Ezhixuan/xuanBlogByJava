@@ -32,7 +32,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 @Component("jwtAuthenticationTokenFilter")
 public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
-  
+
   @Resource private RedisUtil redisUtil;
 
   @Override
@@ -56,17 +56,18 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
       e.printStackTrace();
       ResponseResult responseResult = ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
       String jsonStr = JSONUtil.toJsonStr(responseResult);
-      WebUtils.renderString(response,jsonStr);
+      WebUtils.renderString(response, jsonStr);
       return;
     }
     // 3. 从redis中获取用户信息
     String userId = claims.getSubject();
-    LoginUser loginUser = redisUtil.getValue(RedisKeyConstant.ADMIN_LOGIN_USER_BY_ID + userId, LoginUser.class);
-    
+    LoginUser loginUser =
+        redisUtil.getValue(RedisKeyConstant.BLOG_LOGIN_USER_BY_ID + userId, LoginUser.class);
+
     if (ObjectUtil.isNull(loginUser)) {
       ResponseResult responseResult = ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_USER_ERROR);
       String jsonStr = JSONUtil.toJsonStr(responseResult);
-      WebUtils.renderString(response,jsonStr);
+      WebUtils.renderString(response, jsonStr);
     }
     // 4. 将用户信息存入SecurityContext
     UsernamePasswordAuthenticationToken authenticationToken =
@@ -75,5 +76,4 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
     // 5. 放行
     filterChain.doFilter(request, response);
   }
-  
 }

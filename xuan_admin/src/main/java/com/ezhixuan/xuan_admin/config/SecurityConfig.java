@@ -27,7 +27,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   @Resource private JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
-
   @Resource private AuthenticationEntryPoint authenticationEntryPoint;
   @Resource private AccessDeniedHandler accessDeniedHandler;
 

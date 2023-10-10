@@ -29,7 +29,7 @@ public class LinkController {
     @GetMapping("/getAllLink")
     @ApiOperation("获取所有友链")
     @Log(businessName = "获取所有友链")
-    public ResponseResult<List<LinkListVo>> queryAllLink(){
-        return linkService.queryAllLink();
+    public ResponseResult<List<LinkListVo>> selectLinkList(){
+        return linkService.selectLinkList();
     }
 }

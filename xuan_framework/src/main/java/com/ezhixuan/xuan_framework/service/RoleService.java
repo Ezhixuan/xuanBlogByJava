@@ -2,7 +2,8 @@ package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ezhixuan.xuan_framework.domain.dto.role.RolePageDTO;
-import com.ezhixuan.xuan_framework.domain.dto.role.RoleSaveDTO;
+import com.ezhixuan.xuan_framework.domain.dto.role.RoleDTO;
+import com.ezhixuan.xuan_framework.domain.dto.role.RoleStatusDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Role;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
@@ -24,48 +25,49 @@ public interface RoleService extends IService<Role> {
      * @param rolePageDTO
      * @return
      */
-    ResponseResult<PageVo> queryList(RolePageDTO rolePageDTO);
+    ResponseResult<PageVo> selectRolePageSys(RolePageDTO rolePageDTO);
 
     /**
      * 修改角色状态
      * @param role
      * @return
      */
-    ResponseResult<String> updateStatus(Role role);
+    ResponseResult<String> updateRoleStatusSys(RoleStatusDTO role);
 
     /**
      * 新增角色
      * @param roleDTO
      * @return
      */
-    ResponseResult<String> saveByDto(RoleSaveDTO roleDTO);
+    ResponseResult<String> insertRoleSys(RoleDTO roleDTO);
 
     /**
      * 获取角色信息
      * @param id
      * @return
      */
-    ResponseResult<RoleVo> get(Long id);
+    ResponseResult<RoleVo> selectRoleByIdSys(Long id);
 
     /**
      * 修改角色信息
      * @param roleDTO
      * @return
      */
-    ResponseResult<String> updateByDto(RoleSaveDTO roleDTO);
+    ResponseResult<String> updateRoleSys(RoleDTO roleDTO);
 
     /**
      * 删除角色
      * @param ids
      * @return
      */
-    ResponseResult<String> delete(List<Long> ids);
+    ResponseResult<String> deleteRoleByIdSys(List<Long> ids);
 
     /**
      * 查询所有角色
+     *
      * @return
      */
-    ResponseResult<List<Role>> queryAll();
+    ResponseResult<List<RoleVo>> selectRoleListSys();
 
 }
 

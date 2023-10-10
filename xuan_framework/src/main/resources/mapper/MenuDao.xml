@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ezhixuan.xuan_framework.dao.MenuDao">
+    
+    <resultMap id="menuMap" type="com.ezhixuan.xuan_framework.domain.entity.Menu">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="path" column="path"/>
+        <result property="component" column="component"/>
+        <result property="perms" column="perms"/>
+        <result property="icon" column="icon"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="menuType" column="menu_type"/>
+        <result property="visible" column="visible"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
     <select id="queryPermsByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.perms
         FROM sys_user_role AS ur
@@ -19,37 +40,37 @@
         WHERE ur.user_id = #{userid}
           AND r.`status` = 0
           AND m.`status` = 0
-          AND m.`menu_type` IN ("C","F")
+          AND m.`menu_type` IN ("C", "F")
+          AND m.del_flag = 0
     </select>
     <select id="queryAllChildrenMenu" resultType="java.lang.String">
         SELECT perms
         FROM `sys_menu`
         WHERE menu_type IN ("C", "F")
+          AND del_flag = 0
     </select>
-    <select id="queryChildrenMenuById" resultType="com.ezhixuan.xuan_framework.domain.entity.Menu">
+    <select id="queryChildrenMenuByParentId" resultMap="menuMap">
         SELECT *
         FROM sys_menu
         WHERE parent_id = #{menuId}
+          AND del_flag = 0
     </select>
-    <select id="queryRootMenuByUserId" resultType="com.ezhixuan.xuan_framework.domain.entity.Menu">
-        SELECT
-            DISTINCT m.*
-        FROM
-            `sys_user_role` ur
-                LEFT JOIN `sys_role_menu` rm ON ur.`role_id` = rm.`role_id`
-                LEFT JOIN `sys_menu` m ON m.`id` = rm.`menu_id`
-        WHERE
-            ur.`user_id` = 6 AND
-            m.`menu_type` IN ('C','M') AND
-            m.`status` = 0 AND
-            m.`del_flag` = 0
-        ORDER BY
-            m.parent_id,m.order_num
+    <select id="queryRootMenuByUserId" resultMap="menuMap">
+        SELECT DISTINCT m.*
+        FROM `sys_user_role` ur
+                 LEFT JOIN `sys_role_menu` rm ON ur.`role_id` = rm.`role_id`
+                 LEFT JOIN `sys_menu` m ON m.`id` = rm.`menu_id`
+        WHERE ur.`user_id` = 6
+          AND m.`menu_type` IN ('C', 'M')
+          AND m.`status` = 0
+          AND m.`del_flag` = 0
+        ORDER BY m.parent_id, m.order_num
     </select>
-    <select id="queryAllRootMenu" resultType="com.ezhixuan.xuan_framework.domain.entity.Menu">
-        SELECT * FROM sys_menu
+    <select id="queryAllRootMenu" resultMap="menuMap">
+        SELECT *
+        FROM sys_menu
         WHERE `status` = 0
-          AND menu_type IN ('C','M')
+          AND menu_type IN ('C', 'M')
           AND del_flag = 0
         ORDER BY parent_id, order_num
     </select>

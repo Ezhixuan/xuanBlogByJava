@@ -1,6 +1,7 @@
 package com.ezhixuan.xuan_framework.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ezhixuan.xuan_framework.domain.dto.menu.MenuDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Menu;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.dto.menu.MenuListDTO;
@@ -15,28 +16,28 @@ public interface MenuService extends IService<Menu> {
      * @param menuListDTO
      * @return
      */
-    ResponseResult<List<MenuVo>> queryList(MenuListDTO menuListDTO);
+    ResponseResult<List<MenuVo>> selectMenuList(MenuListDTO menuListDTO);
 
     /**
      * 新增菜单
-     * @param menu
+     * @param menuDto
      * @return
      */
-    ResponseResult<String> addMenu(Menu menu);
+    ResponseResult<String> insertMenu(MenuDTO menuDto);
 
     /**
      * 修改菜单
      * @param menu
      * @return
      */
-    ResponseResult updateMenu(Menu menu);
+    ResponseResult<String> updateMenu(MenuDTO menu);
 
     /**
      * 删除菜单
      * @param ids
      * @return
      */
-    ResponseResult<String> delete(List<Long> ids);
+    ResponseResult<String> deleteMenuById(List<Long> ids);
 
     /**
      * 查询菜单树
@@ -58,4 +59,11 @@ public interface MenuService extends IService<Menu> {
      * @return
      */
     ResponseResult<List<MenuTreeVo>> queryRoleMenuTree(Long id);
+
+    /**
+     * 根据菜单id查询菜单详情
+     * @param menuId
+     * @return
+     */
+    ResponseResult<MenuVo> selectMenuById(Long menuId);
 }

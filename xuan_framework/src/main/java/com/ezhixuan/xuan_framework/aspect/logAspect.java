@@ -7,7 +7,9 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -27,12 +29,15 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Component
 @Slf4j
 public class logAspect {
-  
+
   @Value("${blog.log.path}")
   private String path;
 
   @Pointcut("@annotation(com.ezhixuan.xuan_framework.annotation.Log)")
   public void controllerRuntimeLogPointCut() {}
+  
+  @Pointcut("execution(* com.ezhixuan.xuan_framework..*.*(..))")
+  public void afterThrowing(){}
 
   /**
    * 打印controller执行日志
@@ -40,8 +45,8 @@ public class logAspect {
    * @param pjp 切点
    * @return 原方法返回值
    */
-  @SneakyThrows
   @Around("controllerRuntimeLogPointCut()")
+  @SneakyThrows
   public Object printLog(ProceedingJoinPoint pjp) {
     Object proceed;
     StringBuilder sb = new StringBuilder();
@@ -65,7 +70,6 @@ public class logAspect {
    * @param pjp 切点
    * @param sb 日志
    */
-  @SneakyThrows
   private void beforeProceed(ProceedingJoinPoint pjp, StringBuilder sb) {
     RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
     HttpServletRequest request =
@@ -106,4 +110,10 @@ public class logAspect {
     MethodSignature signature = (MethodSignature) pjp.getSignature();
     return signature.getMethod().getAnnotation(Log.class);
   }
+
+  @AfterThrowing(pointcut = "afterThrowing()", throwing = "ex")
+  public void afterThrowing(JoinPoint joinPoint, Throwable ex) {
+    log.error("出现异常{}", ex);
+  }
+  
 }

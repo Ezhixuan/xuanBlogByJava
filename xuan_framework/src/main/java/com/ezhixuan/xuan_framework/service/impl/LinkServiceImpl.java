@@ -7,17 +7,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ezhixuan.xuan_framework.dao.LinkDao;
+import com.ezhixuan.xuan_framework.domain.dto.link.LinkDTO;
 import com.ezhixuan.xuan_framework.domain.dto.link.LinkPageDTO;
 import com.ezhixuan.xuan_framework.domain.entity.Link;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.link.LinkListVo;
-import com.ezhixuan.xuan_framework.exception.BaseException;
 import com.ezhixuan.xuan_framework.service.LinkService;
 import com.ezhixuan.xuan_framework.utils.BeanUtil;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -32,64 +31,66 @@ public class LinkServiceImpl extends ServiceImpl<LinkDao, Link> implements LinkS
   /**
    * 查询所有友联信息
    *
-   * @return
+   * @return 友联信息
    */
   @Override
-  public ResponseResult<List<LinkListVo>> queryAllLink() {
-    // 在友链页面显示所有审核通过的友链信息
-    // 1. 构建查询
+  public ResponseResult<List<LinkListVo>> selectLinkList() {
+    // 构建查询
     List<Link> list = list(Wrappers.<Link>lambdaQuery().eq(Link::getStatus, LINK_STATUS_PASSED));
-    // 2. 封装
     List<LinkListVo> linkListVos = BeanUtil.copyBeanList(list, LinkListVo.class);
-    // 3. 返回
     return ResponseResult.okResult(linkListVos);
   }
 
   /**
    * 友链列表
    *
-   * @param linkDTO
-   * @return
+   * @param linkDTO 分页参数
+   * @return 友链列表
    */
   @Override
-  public ResponseResult<PageVo> queryList(LinkPageDTO linkDTO) {
-    // 1. 校验参数
+  public ResponseResult<PageVo> selectLinkPageSys(LinkPageDTO linkDTO) {
     linkDTO.check();
-    // 2. 构建查询
+    // 构建查询
     LambdaQueryWrapper<Link> linkLambdaQueryWrapper = new LambdaQueryWrapper<>();
-    // 2.1 如果友链名存在，按照友链名模糊查询
-    linkLambdaQueryWrapper.like(StringUtils.hasText(linkDTO.getName()), Link::getName, linkDTO.getName());
-    // 2.2 如果状态存在，按照状态查询，否则查询正常状态的
+    linkLambdaQueryWrapper.like(
+        StringUtils.hasText(linkDTO.getName()), Link::getName, linkDTO.getName());
     if (StringUtils.hasText(linkDTO.getStatus())) {
       linkLambdaQueryWrapper.eq(Link::getStatus, linkDTO.getStatus());
     } else {
       linkLambdaQueryWrapper.eq(Link::getStatus, LINK_STATUS_PASSED);
     }
-    // 3. 分页查询
+    // 分页查询
     Page<Link> linkPage = new Page<>(linkDTO.getPageNum(), linkDTO.getPageSize());
     page(linkPage, linkLambdaQueryWrapper);
-    // 4. 封装返回
+    // 封装返回
     List<LinkListVo> linkListVos = BeanUtil.copyBeanList(linkPage.getRecords(), LinkListVo.class);
     PageVo pageVo = new PageVo(linkListVos, linkPage.getTotal());
     return ResponseResult.okResult(pageVo);
   }
 
   /**
-   * 删除友链
+   * 修改友链
    *
-   * @param ids
-   * @return
+   * @param linkDto 友链信息
+   * @return 修改结果
    */
   @Override
-  public ResponseResult<String> remove(List<Long> ids) {
-    
-    // 1. 校验参数
-    if (ObjectUtils.isEmpty(ids)){
-      throw new BaseException("请选择要删除的友链");
-    }
-    // 2. 删除
-    remove(ids);
-    // 3. 返回
+  public ResponseResult<String> updateLinkSys(LinkDTO linkDto) {
+    Link link = BeanUtil.copyBean(linkDto, Link.class);
+    updateById(link);
+    return ResponseResult.SUCCESS;
+  }
+
+  /**
+   * 添加友链
+   *
+   * @param linkDto 友链信息
+   * @return 添加结果
+   */
+  @Override
+  public ResponseResult<String> insertLinkSys(LinkDTO linkDto) {
+    Link link = BeanUtil.copyBean(linkDto, Link.class);
+    save(link);
     return ResponseResult.SUCCESS;
   }
 }

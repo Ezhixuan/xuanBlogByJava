@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface UserDao extends BaseMapper<User> {
 
-    String queryUserName(Long id);
+    String selectUserName(Long id);
 
     List<String> queryUserRole(Long id);
 }

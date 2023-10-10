@@ -13,25 +13,25 @@ public interface LoginService {
      * @param userLoginDTO
      * @return
      */
-    ResponseResult<Map<String, String>> login(UserLoginDTO userLoginDTO);
+    ResponseResult<Map<String, String>> userLoginSys(UserLoginDTO userLoginDTO);
 
     /**
      * 登出
      * @return
      */
-    ResponseResult<String> logout();
+    ResponseResult<String> userLogoutSys();
 
     /**
      * 获取用户信息
      *
      * @return
      */
-    ResponseResult<SysUserInfo> getInfo();
+    ResponseResult<SysUserInfo> selectUserInfoSys();
 
     /**
      * 获取路由信息
      *
      * @return
      */
-    ResponseResult<RoutersVo> getRouters();
+    ResponseResult<RoutersVo> selectUserRoutersSys();
 }

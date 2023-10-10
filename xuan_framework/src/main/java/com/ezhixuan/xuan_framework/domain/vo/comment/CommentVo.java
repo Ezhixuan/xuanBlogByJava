@@ -23,16 +23,16 @@ public class CommentVo {
   @ApiModelProperty("评论内容")
   private String content;
 
-  @ApiModelProperty("所回复的目标评论的userid")
+  @ApiModelProperty("被回复的用户id")
   private Long toCommentUserId;
 
-  @ApiModelProperty("所回复的目标评论的用户名")
+  @ApiModelProperty("被回复用户的用户名")
   private String toCommentUserName;
 
-  @ApiModelProperty("回复目标评论id")
+  @ApiModelProperty("被回复的评论id")
   private Long toCommentId;
 
-  @ApiModelProperty("回复目标评论内容")
+  @ApiModelProperty("评论创建人")
   private Long createBy;
 
   @ApiModelProperty("创建时间")

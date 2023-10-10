@@ -30,10 +30,10 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
       HttpServletResponse response,
       AuthenticationException authException)
       throws IOException, ServletException {
-    // 1. 打印异常信息
+    // 打印异常信息
     authException.printStackTrace();
     ResponseResult result;
-    // 2. 根据不同的异常类型，返回不同的错误信息
+    // 根据不同的异常类型，返回不同的错误信息
     if (authException instanceof BadCredentialsException) {
       result =
           ResponseResult.errorResult(
@@ -46,7 +46,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     else {
       result = ResponseResult.errorResult(AppHttpCodeEnum.SERVER_ERROR.getCode(), "认证或授权失败");
     }
-    // 3. 将错误信息返回给前端
+    // 将错误信息返回给前端
     String jsonStr = JSONUtil.toJsonStr(result);
     WebUtils.renderString(response, jsonStr);
   }
