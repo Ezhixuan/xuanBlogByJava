@@ -86,12 +86,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     articlePageDTO.check();
     // 构造查询条件
     LambdaQueryWrapper<Article> articleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    articleLambdaQueryWrapper.eq(
+            !ObjectUtils.isEmpty(articlePageDTO.getCategoryId()) && articlePageDTO.getCategoryId() > 0,
+            Article::getCategoryId,
+            articlePageDTO.getCategoryId());
     articleLambdaQueryWrapper.eq(Article::getStatus, ARTICLE_PUBLISHED_DRAFT);
     articleLambdaQueryWrapper.orderByDesc(Article::getIsTop, Article::getCreateTime);
-    articleLambdaQueryWrapper.eq(
-        ObjectUtils.isEmpty(articlePageDTO.getCategoryId()) && articlePageDTO.getCategoryId() > 0,
-        Article::getCategoryId,
-        articlePageDTO.getCategoryId());
     // 分页
     Page<Article> articlePage =
         new Page<>(articlePageDTO.getPageNum(), articlePageDTO.getPageSize());

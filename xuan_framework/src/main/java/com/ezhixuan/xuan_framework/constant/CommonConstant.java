@@ -51,4 +51,9 @@ public class CommonConstant {
   public static final String SYSTEM = "1";
   /** 普通用户 */
   public static final Long ROLE_NORMAL = 2L;
+    public static final String UPLOAD_URL = "url";
+    public static final String UPLOAD_KEY = "key";
+    public static final Long NOT_LOGIN = -1L;
+  public static final String UPLOAD_COS = "cos";
+  public static final String UPLOAD_LOCAL = "local";
 }

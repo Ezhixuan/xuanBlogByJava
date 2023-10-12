@@ -4,14 +4,12 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson.JSON;
 import com.qcloud.cos.COSClient;
-import com.qcloud.cos.ClientConfig;
-import com.qcloud.cos.auth.BasicCOSCredentials;
-import com.qcloud.cos.http.HttpProtocol;
 import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
-import com.qcloud.cos.region.Region;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,24 +26,24 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Slf4j
 public class TencentCosUtil {
-  private String tmpSecretId;
-  private String tmpSecretKey;
-  private String bucketName;
-  private String region;
 
-  public String upload(MultipartFile file) {
-    // 创建COSClient实例
-    ClientConfig clientConfig = new ClientConfig(new Region(region));
-    clientConfig.setHttpProtocol(HttpProtocol.https);
-    COSClient cosClient =
-        new COSClient(new BasicCOSCredentials(tmpSecretId, tmpSecretKey), clientConfig);
+  private String bucketName;
+  private COSClient cosClient;
+
+  /**
+   * 上传文件
+   *
+   * @param file
+   * @return
+   */
+  public Map<String, String> upload(MultipartFile file) {
 
     try {
       // 获取上传文件的输入流
       InputStream inputStream = file.getInputStream();
       // 对象键(Key)是对象在存储桶中的唯一标识。
       String substring =
-              Objects.requireNonNull(file.getOriginalFilename())
+          Objects.requireNonNull(file.getOriginalFilename())
               .substring(file.getOriginalFilename().lastIndexOf("."));
       String key = UUID.randomUUID().toString().replaceAll("-", "") + substring;
       // 对上传文件分组
@@ -58,20 +56,31 @@ public class TencentCosUtil {
           new PutObjectRequest(bucketName, key, inputStream, objectMetadata);
       PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
       System.out.println(JSON.toJSONString(putObjectResult));
-
       // 返回上传文件路径
       StringBuilder stringBuilder = new StringBuilder("https://");
       stringBuilder
           .append(bucketName)
           .append(".cos.")
-          .append(region)
+          .append(cosClient.getClientConfig().getRegion())
           .append(".myqcloud.com/")
           .append(key);
+      HashMap<String, String> stringStringHashMap = new HashMap<>();
+      stringStringHashMap.put("url", stringBuilder.toString());
+      stringStringHashMap.put("key", key);
 
-      return stringBuilder.toString();
+      return stringStringHashMap;
     } catch (Exception e) {
       e.printStackTrace();
     }
     return null;
+  }
+
+  /**
+   * 删除文件
+   *
+   * @param url 路径
+   */
+  public void delete(String url) {
+    cosClient.deleteObject(bucketName, url);
   }
 }

@@ -36,6 +36,7 @@ servlet:
     max-request-size: 1024MB
     max-file-size: 1024MB
 blog:
+  upload: cos
   txcos:
     tmpSecretId: ${blog.txcos.tmpSecretId} # 你的secretId
     tmpSecretKey: ${blog.txcos.tmpSecretKey} # 你的secretKey

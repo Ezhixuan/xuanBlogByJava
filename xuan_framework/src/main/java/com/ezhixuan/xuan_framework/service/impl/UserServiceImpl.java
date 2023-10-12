@@ -15,6 +15,7 @@ import com.ezhixuan.xuan_framework.domain.entity.LoginUser;
 import com.ezhixuan.xuan_framework.domain.entity.Role;
 import com.ezhixuan.xuan_framework.domain.entity.User;
 import com.ezhixuan.xuan_framework.domain.entity.UserRole;
+import com.ezhixuan.xuan_framework.domain.enums.AppHttpCodeEnum;
 import com.ezhixuan.xuan_framework.domain.vo.PageVo;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
 import com.ezhixuan.xuan_framework.domain.vo.user.UserInfoVo;
@@ -61,6 +62,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
   @Override
   public ResponseResult<UserInfoVo> selectUser() {
     User user = UserUtils.getUser();
+    if (CommonConstant.NOT_LOGIN.equals(user.getId())) {
+      throw new BaseException(AppHttpCodeEnum.NEED_LOGIN.getCode(), "用户未登录");
+    }
     UserInfoVo userInfoVo = BeanUtil.copyBean(user, UserInfoVo.class);
     return ResponseResult.okResult(userInfoVo);
   }

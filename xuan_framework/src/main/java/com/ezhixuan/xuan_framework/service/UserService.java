@@ -22,6 +22,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户信息
+     * @param userId
      * @return
      */
     ResponseResult<UserInfoVo> selectUser();

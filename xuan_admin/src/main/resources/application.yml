@@ -27,6 +27,7 @@ mybatis-plus:
 knife4j:
   enable: true
 blog:
+  upload: cos
   txcos:
     tmpSecretId: ${blog.txcos.tmpSecretId} # 你的secretId
     tmpSecretKey: ${blog.txcos.tmpSecretKey} # 你的secretKey

@@ -1,14 +1,15 @@
 package com.ezhixuan.xuan_admin.controller;
 
+import com.ezhixuan.xuan_framework.annotation.Log;
 import com.ezhixuan.xuan_framework.domain.vo.ResponseResult;
-import com.ezhixuan.xuan_framework.service.UploadService;
+import com.ezhixuan.xuan_framework.strategy.context.UploadStrategyContext;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 
 /**
  * @program: xuanBlog
@@ -21,10 +22,13 @@ import javax.annotation.Resource;
 @RequestMapping("upload")
 public class UploadController {
 
-  @Resource private UploadService uploadService;
+  @Resource private UploadStrategyContext uploadStrategyContext;
 
-  @PostMapping()
+  @Log(businessName = "上传图片")
+  @ApiOperation("上传图片")
+  @PostMapping
   public ResponseResult<String> upload(MultipartFile img){
-    return uploadService.upload(img);
+    String url = uploadStrategyContext.executeUploadStrategy(img);
+    return ResponseResult.okResult(url);
   }
 }

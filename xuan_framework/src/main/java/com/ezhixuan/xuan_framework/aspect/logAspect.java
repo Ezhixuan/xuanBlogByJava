@@ -87,7 +87,12 @@ public class logAspect {
         .append(pjp.getSignature().getName())
         .append(System.lineSeparator());
     sb.append("访问IP    : ").append(request.getRemoteHost()).append(System.lineSeparator());
-    sb.append("传入参数   : ").append(JSON.toJSONString(pjp.getArgs())).append(System.lineSeparator());
+    if ("上传图片".equals(systemlog.businessName())) {
+      sb.append("传入参数    : ").append("图片").append(System.lineSeparator());
+    }else{
+      sb.append("传入参数   : ").append(JSON.toJSONString(pjp.getArgs())).append(System.lineSeparator());
+    }
+    
   }
 
   /**

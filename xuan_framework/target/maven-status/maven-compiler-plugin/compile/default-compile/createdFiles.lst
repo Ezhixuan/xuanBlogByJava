@@ -1,6 +1,8 @@
+com\ezhixuan\xuan_framework\strategy\impl\AbstractUploadServiceImpl.class
 com\ezhixuan\xuan_framework\dao\UserDao.class
 com\ezhixuan\xuan_framework\domain\vo\user\SysUserInfo.class
 com\ezhixuan\xuan_framework\domain\dto\tag\TagDTO.class
+com\ezhixuan\xuan_framework\strategy\impl\LocalUploadServiceImpl.class
 com\ezhixuan\xuan_framework\domain\entity\ArticleTag.class
 com\ezhixuan\xuan_framework\service\impl\PermissionServiceImpl.class
 com\ezhixuan\xuan_framework\domain\dto\user\UserPageDTO.class
@@ -21,10 +23,10 @@ com\ezhixuan\xuan_framework\config\WebConfig.class
 com\ezhixuan\xuan_framework\dao\MenuDao.class
 com\ezhixuan\xuan_framework\handler\validated\Insert.class
 com\ezhixuan\xuan_framework\service\impl\RoleMenuServiceImpl.class
-com\ezhixuan\xuan_framework\service\impl\UploadServiceImpl.class
 com\ezhixuan\xuan_framework\domain\entity\Role.class
 com\ezhixuan\xuan_framework\service\impl\UserDetailsServiceImpl.class
 com\ezhixuan\xuan_framework\handler\GlobalExceptionHandler.class
+com\ezhixuan\xuan_framework\strategy\impl\COSUploadServiceImpl.class
 com\ezhixuan\xuan_framework\domain\vo\user\BlogUserLoginVo.class
 com\ezhixuan\xuan_framework\domain\vo\user\UserQueryVo$UserQueryVoBuilder.class
 com\ezhixuan\xuan_framework\domain\vo\article\HotArticleVo.class
@@ -54,7 +56,6 @@ com\ezhixuan\xuan_framework\domain\entity\Category.class
 com\ezhixuan\xuan_framework\service\TagService.class
 com\ezhixuan\xuan_framework\service\LoginService.class
 com\ezhixuan\xuan_framework\domain\dto\user\UserRegisterDTO.class
-com\ezhixuan\xuan_framework\service\UploadService.class
 com\ezhixuan\xuan_framework\domain\entity\Comment.class
 com\ezhixuan\xuan_framework\domain\vo\comment\CommentVo.class
 com\ezhixuan\xuan_framework\domain\vo\menu\MenuTreeVo.class
@@ -64,6 +65,7 @@ com\ezhixuan\xuan_framework\service\RoleService.class
 com\ezhixuan\xuan_framework\service\impl\RoleServiceImpl.class
 com\ezhixuan\xuan_framework\domain\entity\Menu.class
 com\ezhixuan\xuan_framework\utils\WebUtils.class
+com\ezhixuan\xuan_framework\utils\FileUtil.class
 com\ezhixuan\xuan_framework\dao\ArticleTagDao.class
 com\ezhixuan\xuan_framework\domain\dto\link\LinkDTO.class
 com\ezhixuan\xuan_framework\dao\RoleDao.class
@@ -97,6 +99,7 @@ com\ezhixuan\xuan_framework\domain\dto\user\UserInfoDTO.class
 com\ezhixuan\xuan_framework\domain\dto\category\CategoryDTO.class
 com\ezhixuan\xuan_framework\domain\dto\role\RoleStatusDTO.class
 com\ezhixuan\xuan_framework\XuanFrameworkApplication.class
+com\ezhixuan\xuan_framework\strategy\context\UploadStrategyContext.class
 com\ezhixuan\xuan_framework\service\impl\BlogLoginServiceImpl.class
 com\ezhixuan\xuan_framework\dao\CommentDao.class
 com\ezhixuan\xuan_framework\service\impl\CommentServiceImpl.class
@@ -104,10 +107,12 @@ com\ezhixuan\xuan_framework\domain\vo\tag\TagVo.class
 com\ezhixuan\xuan_framework\dao\LinkDao.class
 com\ezhixuan\xuan_framework\domain\vo\PageVo.class
 com\ezhixuan\xuan_framework\domain\entity\UserRole.class
+com\ezhixuan\xuan_framework\UploadEnum.class
 com\ezhixuan\xuan_framework\domain\vo\role\RoleVo.class
 com\ezhixuan\xuan_framework\service\RoleMenuService.class
 com\ezhixuan\xuan_framework\domain\dto\menu\MenuDTO.class
 com\ezhixuan\xuan_framework\domain\dto\article\ArticleDTO.class
+com\ezhixuan\xuan_framework\strategy\UploadService.class
 com\ezhixuan\xuan_framework\config\properties\TencentCosProperties.class
 com\ezhixuan\xuan_framework\service\impl\ArticleTagServiceImpl.class
 com\ezhixuan\xuan_framework\service\LinkService.class
